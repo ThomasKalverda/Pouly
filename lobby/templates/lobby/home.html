@@ -1,4 +1,78 @@
 {% extends "lobby/base.html" %}
 {% block content %}
-    <h1>Dashboard</h1>
+    {% load static %}
+    <h2 class="page-title">My Poules</h2>
+    <div class="poule-group">
+        <div class="row flex-row flex-nowrap">
+            {% for book in books %}
+                {#                {% include 'books/book_element.html' %}#}
+                <div class="col">
+                    <div class="card card-block card-hover">
+                        <img class="card-img-top" src="{% static '/assets/images/card template.svg' %}"
+                             alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                                of
+                                the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+
+                {#            {% if forloop.counter|divisibleby:"5" %}#}
+                {#  Close the current deck and start a new one #}
+                {#                </div>#}
+                {#                <div class="row col-md-10 row-cols-5">#}
+                {#            {% endif %}#}
+            {% endfor %}
+        </div><!-- The final deck is closed here, outside the loop -->
+    </div>
+    <hr>
+    <h2 class="page-title">Active Poules</h2>
+    <div class="poule-group">
+        <div class="row flex-row flex-nowrap">
+            {% for book in books %}
+                {#                {% include 'books/book_element.html' %}#}
+                <div class="col">
+                    <div class="card card-block card-hover">
+                        <img class="card-img-top" src="{% static '/assets/images/card template.svg' %}"
+                             alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                                of
+                                the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+
+                {#            {% if forloop.counter|divisibleby:"5" %}#}
+                {#  Close the current deck and start a new one #}
+                {#                </div>#}
+                {#                <div class="row col-md-10 row-cols-5">#}
+                {#            {% endif %}#}
+            {% endfor %}
+        </div><!-- The final deck is closed here, outside the loop -->
+    </div>
+
+    <div id="accordian-4">
+        <div class="card m-t-30">
+            <a class="card-header " data-toggle="collapse" data-parent="#accordian-4" href="#Toggle-2"
+               aria-expanded="false"
+               aria-controls="Toggle-2">
+                <i class="seticon fa fa-times" aria-hidden="true"></i>
+                <span>Toggle, Closed by default</span>
+            </a>
+            <div id="Toggle-2" class="multi-collapse collapse" style="">
+                <div class="card-body widget-content">
+                    This box is now open
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock content %}

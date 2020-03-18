@@ -1,0 +1,28 @@
+.page-wrapper-lobby {
+    padding: 100px;
+    padding-left: 200px;
+    background: #eef5f9;
+    position: relative;
+}
+
+#main-wrapper[data-layout="vertical"][data-sidebartype="full"] .page-wrapper-lobby {
+    margin-left: 20px;
+}
+
+.card.card-block {
+    width: 18rem;
+    min-height: 300px;
+    /*    min-width: 300px;*/
+    margin-right: 5px;
+}
+
+.poule-group > .row {
+    overflow-x: auto;
+    padding-top: 50px;
+    /*white-space: nowrap;*/
+}
+
+.poule-group > .row > .col {
+    /*display: inline-block;*/
+    /*float: none;*/
+}
