@@ -11,14 +11,19 @@
 
 .card.card-block {
     width: 18rem;
-    min-height: 300px;
+    height: 300px;
     /*    min-width: 300px;*/
     margin-right: 5px;
+}
+
+.poule-card {
+    height: 500px;
 }
 
 .poule-group > .row {
     overflow-x: auto;
     padding-top: 50px;
+
     /*white-space: nowrap;*/
 }
 
