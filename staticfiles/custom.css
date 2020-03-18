@@ -9,16 +9,16 @@
     margin-left: 20px;
 }
 
-.card.card-block {
+.card-block {
     width: 18rem;
-    height: 300px;
+    min-height: 200px;
     /*    min-width: 300px;*/
     margin-right: 5px;
 }
 
-.poule-card {
-    height: 500px;
-}
+/*.poule-card {*/
+/*    height: 500px;*/
+/*}*/
 
 .poule-group > .row {
     overflow-x: auto;
@@ -31,3 +31,4 @@
     /*display: inline-block;*/
     /*float: none;*/
 }
+
