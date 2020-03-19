@@ -94,16 +94,29 @@
                                 class="srh-btn"><i class="ti-close"></i></a>
                         </form>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link " href="#" role="button">
-                            <span class="d-none d-md-block">Log In</span>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link " href="#" role="button">
-                            <span class="d-none d-md-block">Register</span>
-                        </a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item ">
+                            <a class="nav-link " href="{% url 'profile' %}" role="button">
+                                <span class="d-none d-md-block">Profile</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link " href="{% url 'logout' %}" role="button">
+                                <span class="d-none d-md-block">Logout</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ">
+                            <a class="nav-link " href="{% url 'login' %}" role="button">
+                                <span class="d-none d-md-block">Log In</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link " href="{% url 'register' %}" role="button">
+                                <span class="d-none d-md-block">Register</span>
+                            </a>
+                        </li>
+                    {% endif %}
 
                 </ul>
             </div>
