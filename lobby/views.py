@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import Poule
 from django.http import HttpResponse
 
 books = [
@@ -52,6 +53,6 @@ books = [
 
 def home(request):
     context = {
-        'books': books
+        'poules': Poule.objects.all()
     }
     return render(request, 'lobby/home.html', context)
