@@ -1,4 +1,42 @@
 from django.shortcuts import render
+from django.views.generic import ListView, DetailView, DeleteView
+from lobby.models import Poule
+
+
+class PouleOverviewView(DetailView):
+    model = Poule
+    template_name = 'poule/overview.html'
+
+
+class PouleRankingView(DetailView):
+    model = Poule
+    template_name = 'poule/ranking.html'
+
+
+class PoulePredictionsView(DetailView):
+    model = Poule
+    template_name = 'poule/predictions.html'
+
+
+class PouleRulesView(DetailView):
+    model = Poule
+    template_name = 'poule/rules.html'
+
+
+class PouleGamesView(DetailView):
+    model = Poule
+    template_name = 'poule/games.html'
+
+
+class PouleTeamsView(DetailView):
+    model = Poule
+    template_name = 'poule/teams.html'
+
+
+class PouleInfoView(DetailView):
+    model = Poule
+    template_name = 'poule/info.html'
+
 
 
 def overview(request):

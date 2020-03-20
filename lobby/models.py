@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Sport(models.Model):
     name = models.CharField(max_length=100, default='Voetbal')
-    imageURL = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(default='sport_pics/default.jpg', upload_to='sport_pics')
 
     def __str__(self):
         return self.name
@@ -12,7 +12,7 @@ class Sport(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=100)
-    imageURL = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(default='team_pics/default.jpg', upload_to='team_pics')
 
     def __str__(self):
         return self.name
@@ -21,7 +21,7 @@ class Team(models.Model):
 class Poule(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=300, blank=True)
-    imageURL = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(default='poule_pics/default.jpg', upload_to='poule_pics')
     sport = models.ForeignKey(Sport, on_delete=models.SET_NULL, null=True)
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin')
     users = models.ManyToManyField(User)
