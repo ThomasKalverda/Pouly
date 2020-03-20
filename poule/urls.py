@@ -1,12 +1,13 @@
 from django.urls import path
 from . import views
+from .views import PouleOverviewView, PouleGamesView, PouleInfoView, PoulePredictionsView, PouleRankingView, PouleRulesView, PouleTeamsView
 
 urlpatterns = [
-    path('', views.overview, name='poule-overview'),
-    path('ranking/', views.ranking, name='poule-ranking'),
-    path('predictions/', views.predictions, name='poule-predictions'),
-    path('teams/', views.teams, name='poule-teams'),
-    path('info/', views.info, name='poule-info'),
-    path('games/', views.games, name='poule-games'),
-    path('rules/', views.rules, name='poule-rules'),
+    path('overview/', PouleOverviewView.as_view(), name='poule-overview'),
+    path('ranking/', PouleRankingView.as_view(), name='poule-ranking'),
+    path('predictions/', PoulePredictionsView.as_view(), name='poule-predictions'),
+    path('rules/', PouleRulesView.as_view(), name='poule-rules'),
+    path('games/', PouleGamesView.as_view(), name='poule-games'),
+    path('teams/', PouleTeamsView.as_view(), name='poule-teams'),
+    path('info/', PouleInfoView.as_view(), name='poule-info'),
 ]
