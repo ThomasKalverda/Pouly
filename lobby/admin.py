@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Poule, Sport
+from .models import Poule, Sport, Team
 
 admin.site.register(Poule)
 admin.site.register(Sport)
-# Register your models here.
+admin.site.register(Team)
