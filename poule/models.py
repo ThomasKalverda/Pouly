@@ -14,3 +14,22 @@ class Game(models.Model):
 
     def __str__(self):
         return f'{self.poule}: {self.team1} vs {self.team2} '
+
+
+class Prediction(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='predictions')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='predictions')
+    prediction1 = models.SmallIntegerField(null=True, blank=True)
+    prediction2 = models.SmallIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.game}: {self.prediction1} vs {self.prediction2}'
+
+
+class Score(models.Model):
+    points = models.SmallIntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='points')
+    poule = models.ForeignKey(Poule, on_delete=models.CASCADE, related_name='points')
+
+    def __str__(self):
+        return f'{self.poule}: {self.user} - {self.points}'
