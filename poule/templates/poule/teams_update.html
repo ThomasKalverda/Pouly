@@ -1,0 +1,41 @@
+{% extends "poule/sidebar.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="row page-breadcrumb ">
+        <div class="col-3 d-flex  align-items-center">
+            <h4 class="page-title mb-2 ">Update team</h4>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Update team</h5>
+                    <form class="form-horizontal m-t-20" method="POST" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="row p-b-30">
+                            <div class="col-12">
+                                <fieldset class="form-group">
+                                    {{ form|crispy }}
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="p-t-20">
+                                        <button class="btn btn-block btn-lg btn-outline-success" type="submit">Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock content %}

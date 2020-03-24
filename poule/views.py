@@ -1,9 +1,15 @@
+from django.http import HttpResponseForbidden
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView
-from lobby.models import Poule
+from django.urls import reverse
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, View
+from django.views.generic.detail import SingleObjectMixin
+
+from lobby.models import Poule, Team
 from .models import Game
 from django.db.models.functions import TruncDay
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic.edit import FormMixin, FormView
+from .forms import CreateTeamForm
 
 
 class PouleOverviewView(DetailView):
@@ -29,7 +35,7 @@ class PoulePredictionsView(DetailView):
         for date in complete_date_list:
             if date['date_formatted'] not in date_list:
                 date_list.append(date['date_formatted'])
-        date_dict = {el:[] for el in date_list}
+        date_dict = {el: [] for el in date_list}
         for game in complete_game_list:
             date_dict[game.date_formatted].append(game)
         context['date_dict'] = date_dict
@@ -54,16 +60,54 @@ class PouleGamesView(DetailView):
         for date in complete_date_list:
             if date['date_formatted'] not in date_list:
                 date_list.append(date['date_formatted'])
-        date_dict = {el:[] for el in date_list}
+        date_dict = {el: [] for el in date_list}
         for game in complete_game_list:
             date_dict[game.date_formatted].append(game)
         context['date_dict'] = date_dict
         return context
 
 
-class PouleTeamsView(DetailView):
+class TeamUpdateView(UpdateView):
+    model = Team
+    template_name = 'poule/teams_update.html'
+    fields = ['name', 'image']
+
+    def get_success_url(self):
+        return reverse('lobby-home')
+
+
+class TeamRemoveFromPouleView(View):
+    model = Poule
+    template_name = 'poule/teams_remove'
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        object = Poule.objects.get(pk=self.kwargs['pk'])
+        team = request.POST
+
+
+class PouleTeamsView(FormMixin, DetailView):
     model = Poule
     template_name = 'poule/teams.html'
+    form_class = CreateTeamForm
+
+    def get_success_url(self):
+        return reverse('poule-teams', kwargs={'pk': self.object.pk})
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        object = Poule.objects.get(pk=self.kwargs['pk'])
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            form.save()
+            team = form.instance
+            object.teams.add(team)
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -81,6 +125,7 @@ class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+
 class PouleDeleteView(DeleteView):
     model = Poule
     success_url = '/'
@@ -90,10 +135,6 @@ class PouleDeleteView(DeleteView):
         if self.request.user == poule.admin:
             return True
         return False
-
-
-
-
 
 
 def overview(request):
