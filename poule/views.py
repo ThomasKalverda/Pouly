@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 from lobby.models import Poule
 from .models import Game
 from django.db.models.functions import TruncDay
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 class PouleOverviewView(DetailView):
@@ -65,9 +66,34 @@ class PouleTeamsView(DetailView):
     template_name = 'poule/teams.html'
 
 
-class PouleInfoView(DetailView):
+class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Poule
-    template_name = 'poule/info.html'
+    template_name = 'lobby/poule_info.html'
+    fields = ['name', 'description', 'image', 'sport']
+
+    def form_valid(self, form):
+        form.instance.admin = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        poule = self.get_object()
+        if self.request.user == poule.admin:
+            return True
+        return False
+
+class PouleDeleteView(DeleteView):
+    model = Poule
+    success_url = '/'
+
+    def test_func(self):
+        poule = self.get_object()
+        if self.request.user == poule.admin:
+            return True
+        return False
+
+
+
+
 
 
 def overview(request):

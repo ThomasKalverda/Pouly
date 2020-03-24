@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
 from .models import Poule
 from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def home(request):
@@ -17,7 +18,14 @@ class PouleListView(ListView):
     context_object_name = 'poules'
 
 
+class PouleCreateView(LoginRequiredMixin, CreateView):
+    model = Poule
+    template_name = 'lobby/poule_form.html'
+    fields = ['name', 'description', 'image', 'sport']
 
+    def form_valid(self, form):
+        form.instance.admin = self.request.user
+        return super().form_valid(form)
 
 
 
