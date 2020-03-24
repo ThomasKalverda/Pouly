@@ -4,8 +4,8 @@ from django.urls import reverse
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, View
 from django.views.generic.detail import SingleObjectMixin
 
-from lobby.models import Poule, Team
-from .models import Game
+from lobby.models import Poule
+from .models import Game, Team
 from django.db.models.functions import TruncDay
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin, FormView
@@ -72,19 +72,16 @@ class TeamUpdateView(UpdateView):
     template_name = 'poule/teams_update.html'
     fields = ['name', 'image']
 
-    def get_success_url(self):
-        return reverse('lobby-home')
 
+class TeamDeleteView(DeleteView):
+    model = Team
+    template_name = 'poule/teams_delete.html'
 
-class TeamRemoveFromPouleView(View):
-    model = Poule
-    template_name = 'poule/teams_remove'
-
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
-        object = Poule.objects.get(pk=self.kwargs['pk'])
-        team = request.POST
+    def test_func(self):
+        poule = self.get_object()
+        if self.request.user == poule.admin:
+            return True
+        return False
 
 
 class PouleTeamsView(FormMixin, DetailView):
@@ -102,9 +99,8 @@ class PouleTeamsView(FormMixin, DetailView):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
+            form.instance.poule = object
             form.save()
-            team = form.instance
-            object.teams.add(team)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)

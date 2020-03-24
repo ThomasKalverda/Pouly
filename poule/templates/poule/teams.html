@@ -27,8 +27,8 @@
                                     <td><img src=" {{ team.image.url }} " class="rounded img-table"></td>
                                     <td>{{ team.name }}</td>
                                     <td>
-                                        <button class="btn btn-outline-info">Edit</button>
-                                        <button class="btn btn-outline-danger">Delete</button>
+                                        <a href="{{ team.pk }}/update/" class="btn btn-outline-info">Edit</a>
+                                        <a href="{{ team.pk }}/delete/" class="btn btn-outline-danger">Delete</a>
                                     </td>
                                 </tr>
                             {% endfor %}

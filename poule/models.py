@@ -1,7 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
-from lobby.models import Poule, Team
+from lobby.models import Poule
 from django.utils import timezone
+from django.urls import reverse
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(default='team_pics/default.jpg', upload_to='team_pics')
+    poule = models.ForeignKey(Poule, on_delete=models.CASCADE, related_name='teams')
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('poule-teams', kwargs={'pk': self.poule.id})
 
 
 class Game(models.Model):
