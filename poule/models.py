@@ -19,8 +19,8 @@ class Team(models.Model):
 
 class Game(models.Model):
     poule = models.ForeignKey(Poule, on_delete=models.CASCADE, related_name='games')
-    team1 = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, related_name='team1')
-    team2 = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, related_name='team2')
+    team1 = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, related_name='games1')
+    team2 = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, related_name='games2')
     result1 = models.SmallIntegerField(null=True, blank=True)
     result2 = models.SmallIntegerField(null=True, blank=True)
     date = models.DateTimeField(auto_now=False, auto_now_add=False, default=timezone.now)
@@ -28,12 +28,16 @@ class Game(models.Model):
     def __str__(self):
         return f'{self.poule}: {self.team1} vs {self.team2} '
 
+    def get_absolute_url(self):
+        return reverse('poule-games', kwargs={'pk': self.poule.id})
+
 
 class Prediction(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='predictions')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='predictions')
     prediction1 = models.SmallIntegerField(null=True, blank=True)
     prediction2 = models.SmallIntegerField(null=True, blank=True)
+    points = models.SmallIntegerField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.game}: {self.prediction1} vs {self.prediction2}'
