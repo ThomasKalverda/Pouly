@@ -1,0 +1,43 @@
+{% extends "poule/sidebar.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="row page-breadcrumb ">
+        <div class="col-3 d-flex  align-items-center">
+            <h4 class="page-title mb-2 ">Update team</h4>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Delete team</h5>
+                    <form class="form-horizontal m-t-20" method="POST" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="row p-b-30">
+                            <div class="col-12">
+                                <fieldset class="form-group">
+                                    <h2>Are you sure you want to delete {{ object.name }}</h2>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="p-t-20">
+                                        <button class="btn btn-lg btn-outline-danger" type="submit">Delete
+                                        </button>
+                                        <a href="#" class="btn btn-lg btn-outline-secondary">Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock content %}

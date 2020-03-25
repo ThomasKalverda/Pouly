@@ -98,6 +98,11 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item ">
+                            <a class="nav-link " href="{% url 'poule-create' %}" role="button">
+                                <span class="d-none d-md-block">Create New Poule</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
                             <a class="nav-link " href="{% url 'profile' %}" role="button">
                                 <span class="d-none d-md-block">Profile</span>
                             </a>
