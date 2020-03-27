@@ -1,6 +1,6 @@
 {% extends "poule/sidebar.html" %}
 {% block content %}
-     <div class="row page-breadcrumb ">
+    <div class="row page-breadcrumb ">
         <div class="col-3 d-flex  align-items-center border-bottom border-dark">
             <h3 class="page-title mb-2 ">Predictions</h3>
             <hr>
@@ -8,83 +8,194 @@
         </div>
     </div>
     <br>
-     {% for date,game_list in date_dict.items %}
+
+    {% for game,prediction in prediction_dict.items %}
+        <h6>{{ game.team1 }} - {{ game.team2 }}: {{ prediction.prediction1 }} - {{ prediction.prediction2 }}</h6>
+    {% endfor %}
+    {{ form.prediction1 }} {{ form.prediction2 }}
+
+    {% for date,game_list in date_dict.items %}
         <h4>{{ date|date:"l j F Y" }}</h4>
         {% for game in game_list %}
-            <div class="card-group card-hover col-8">
-                <div class="card col-2">
-                    <div class="card-body row h-100 align-items-center justify-content-center">
-                        <span class=""><h2 class="text-muted ">{{ game.date|date:"H:i" }}</h2></span>
+
+            {% with prediction=prediction_dict|get_item:game %}
+            {% if game.result1  and game.result2 %}
+                <div class="card-group card-hover col-8">
+                    <div class="card col-2">
+                        <div class="card-body row h-100 align-items-center justify-content-center">
+                            <span class=""><h2 class="text-muted ">{{ game.date|date:"H:i" }}</h2></span>
+                        </div>
                     </div>
-                </div>
-                <div class="card col-8 text-center">
-                    <div class="card-body row h-100 align-items-center">
-                        <div class="col-1">
-                            <img src=" {{ game.team1.image.url }} " class="rounded img-fluid" style="max-width: 60px">
-                        </div>
-                        <div class="col-3">
-                            <h4 class="font-weight-light">{{ game.team1.name }}</h4>
-                        </div>
-                        <div class=" col-3">
-                            <div class="row justify-content-center">
-                                <select class="select form-control custom-select font-weight-bold font-20" onselect=""
-                                        style="width: 60px; height:50px;">
-                                    <option></option>
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5+</option>
-                                </select>
-                                <select class="select form-control custom-select font-weight-bold font-20"
-                                        style="width: 60px; height:50px;">
-                                    <option></option>
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5+">5+</option>
-                                </select>
+                    <div class="card col-8 text-center">
+                        <div class="card-body row h-100 align-items-center">
+                            <div class="col-1">
+                                <img src=" {{ game.team1.image.url }} " class="rounded img-fluid"
+                                     style="max-width: 60px">
+                            </div>
+                            <div class="col-3">
+                                <h4 class="font-weight-light">{{ game.team1.name }}</h4>
+                            </div>
+                            <div class=" col-3">
+                                <div class="row justify-content-center">
+                                    {{form.game.value}}
+                                    <select disabled class="select form-control custom-select font-weight-bold font-20"
+                                            onselect=""
+                                            style="width: 60px; height:50px;">
+                                        <option>{{ prediction.prediction1 }}</option>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5+</option>
+                                    </select>
+                                    <select disabled
+                                            class="select disabled form-control custom-select font-weight-bold font-20"
+                                            style="width: 60px; height:50px;">
+                                        <option>{{ prediction.prediction2 }}</option>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5+">5+</option>
+                                    </select>
+                                </div>
+
                             </div>
 
-                        </div>
-
-                        <div class="col-3">
-                            <h4 class="font-weight-light">{{ game.team2.name }}</h4>
-                        </div>
-                        <div class="col-1">
-                            <img src=" {{ game.team2.image.url }} " class="rounded img-fluid" style="max-width: 60px">
+                            <div class="col-3">
+                                <h4 class="font-weight-light">{{ game.team2.name }}</h4>
+                            </div>
+                            <div class="col-1">
+                                <img src=" {{ game.team2.image.url }} " class="rounded img-fluid"
+                                     style="max-width: 60px">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card col-2 p-1">
-                    <div class="card-body row h-100 align-items-center justify-content-center">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <div class="button-group">
-                                    <div class="row">
-                                        <button type="button" class="btn btn-lg btn-outline-secondary disabled">1
-                                        </button>
+                    <div class="card col-2 p-1">
+                        <div class="card-body row h-100 align-items-center justify-content-center">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <div class="button-group">
+                                        <div class="row">
+                                            <button type="button"
+                                                    class="btn btn-lg btn-outline-secondary disabled">{{ game.result1 }}
+                                            </button>
 
-                                        <button type="button" class="btn btn-lg btn-outline-secondary disabled">2
-                                        </button>
+                                            <button type="button"
+                                                    class="btn btn-lg btn-outline-secondary disabled">{{ game.result2 }}
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-3 ">
+                        {% if prediction.points %}
+                        <span class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
+                            text-align: center;">
+
+                        {{ prediction.points }}
+                        </span>
+                        {% else %}
+                            <span class=" badge badge-pill badge-danger" style="font-weight: bold; font-size: large;
+                            text-align: center;">0</span>
+                        {% endif %}
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            {% else %}
+                <form class="" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ game.id }}" name="gameid"/>
+                    <div class="card-group card-hover col-8">
+
+                        <div class="card col-2">
+                            <div class="card-body row h-100 align-items-center justify-content-center">
+                                <span class=""><h2 class="text-muted ">{{ game.date|date:"H:i" }}</h2></span>
+                            </div>
+                        </div>
+                        <div class="card col-8 text-center">
+                            <div class="card-body row h-100 align-items-center">
+                                <div class="col-1">
+                                    <img src=" {{ game.team1.image.url }} " class="rounded img-fluid"
+                                         style="max-width: 60px">
+                                </div>
+                                <div class="col-3">
+                                    <h4 class="font-weight-light">{{ game.team1.name }}</h4>
+                                </div>
+                                <div class=" col-3">
+                                    <div class="row justify-content-center">
+                                        {{ form.prediction1 }}
+                                        {{ form.prediction2 }}
+
+                                        {#                                        <select class="select form-control custom-select font-weight-bold font-20"#}
+                                        {#                                                onselect=""#}
+                                        {#                                                style="width: 60px; height:50px;">#}
+                                        {#                                            <option></option>#}
+                                        {#                                            <option value="0">0</option>#}
+                                        {#                                            <option value="1">1</option>#}
+                                        {#                                            <option value="2">2</option>#}
+                                        {#                                            <option value="3">3</option>#}
+                                        {#                                            <option value="4">4</option>#}
+                                        {#                                            <option value="5">5+</option>#}
+                                        {#                                        </select>#}
+                                        {#                                        <select class="select form-control custom-select font-weight-bold font-20"#}
+                                        {#                                                style="width: 60px; height:50px;">#}
+                                        {#                                            <option></option>#}
+                                        {#                                            <option value="0">0</option>#}
+                                        {#                                            <option value="1">1</option>#}
+                                        {#                                            <option value="2">2</option>#}
+                                        {#                                            <option value="3">3</option>#}
+                                        {#                                            <option value="4">4</option>#}
+                                        {#                                            <option value="5+">5+</option>#}
+                                        {#                                        </select>#}
                                     </div>
 
                                 </div>
-                            </div>
-                            <div class="col-3 ">
-                        <span class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
-                            text-align: center;">4</span>
+
+                                <div class="col-3">
+                                    <h4 class="font-weight-light">{{ game.team2.name }}</h4>
+                                </div>
+                                <div class="col-1">
+                                    <img src=" {{ game.team2.image.url }} " class="rounded img-fluid"
+                                         style="max-width: 60px">
+                                </div>
                             </div>
                         </div>
+                        <div class="card col-2 p-1">
+                            <div class="card-body row h-100 align-items-center justify-content-center">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
 
+                                        <div class="form-group">
+                                            <div class="p-t-20">
+                                                <button class="btn btn-lg btn-outline-success" type="submit">
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
 
                     </div>
 
-                </div>
-            </div>
+                </form>
+
+
+            {% endif %}
+            {% endwith %}
         {% endfor %}
     {% endfor %}
 {% endblock content %}
