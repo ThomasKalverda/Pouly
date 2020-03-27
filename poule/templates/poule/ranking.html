@@ -1,4 +1,6 @@
 {% extends "poule/sidebar.html" %}
 {% block content %}
-    <h1>Ranking</h1>
+    {% for user in object.users.all %}
+        <h3>{{ user.username }}</h3>
+    {% endfor %}
 {% endblock content %}

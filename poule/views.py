@@ -30,9 +30,19 @@ def get_game_prediction_points(dictionary, key):
     return dictionary.get(key).points
 
 
-class PouleOverviewView(DetailView):
+class PouleOverviewView(UserPassesTestMixin, DetailView):
     model = Poule
     template_name = 'poule/overview.html'
+
+    def test_func(self):
+        poule = self.get_object()
+        if self.request.user in poule.users.all():
+            return True
+        elif self.request.user not in poule.users.all():
+            poule.users.add(self.request.user)
+            return True
+        else:
+            return False
 
 
 class PouleRankingView(DetailView):
@@ -199,7 +209,7 @@ class GameUpdateView(UpdateView):
     fields = ['team1', 'team2', 'date', 'result1', 'result2']
 
 
-class GameDeleteView(DeleteView):
+class GameDeleteView(UserPassesTestMixin, DeleteView):
     model = Game
     template_name = 'poule/games_delete.html'
 
