@@ -3,15 +3,15 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, View
 from django.views.generic.detail import SingleObjectMixin
-
+import operator
 from lobby.models import Poule
+from .models import Game, Team, Prediction, Score
 from collections import defaultdict
-from .models import Game, Team, Prediction
 from django.db.models.functions import TruncDay
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin, FormView
 from .forms import CreateTeamForm, CreateGameForm, CreatePredictionForm
-
+from collections import OrderedDict
 from django.template.defaulttags import register
 
 
@@ -45,6 +45,8 @@ class PouleOverviewView(UserPassesTestMixin, DetailView):
             return True
         elif self.request.user not in poule.users.all():
             poule.users.add(self.request.user)
+            score = Score(poule=poule, user=self.request.user)
+            score.save()
             return True
         else:
             return False
@@ -53,6 +55,16 @@ class PouleOverviewView(UserPassesTestMixin, DetailView):
 class PouleRankingView(DetailView):
     model = Poule
     template_name = 'poule/ranking.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        users = self.get_object().users.all()
+        scores = {}
+        for user in users:
+            scores[user] = Score.objects.filter(user=user, poule=self.get_object()).first().points
+        sorted_d = dict(sorted(scores.items(), key=operator.itemgetter(1),reverse=True))
+        context['scores'] = sorted_d
+        return context
 
 
 class PoulePredictionsView(FormMixin, DetailView):
@@ -231,7 +243,7 @@ class PouleTeamsView(FormMixin, DetailView):
 class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Poule
     template_name = 'lobby/poule_info.html'
-    fields = ['name', 'description', 'image', 'sport']
+    fields = ['name', 'description', 'admin', 'image', 'sport']
 
     def form_valid(self, form):
         form.instance.admin = self.request.user
