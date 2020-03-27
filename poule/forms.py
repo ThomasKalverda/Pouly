@@ -10,6 +10,7 @@ PREDICTION_CHOICES = [
     (5, 5),
 ]
 
+
 class CreateTeamForm(forms.ModelForm):
     class Meta:
         model = Team

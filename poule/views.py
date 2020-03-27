@@ -257,7 +257,7 @@ class PouleTeamsView(FormMixin, DetailView):
 class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Poule
     template_name = 'lobby/poule_info.html'
-    fields = ['name', 'description', 'image', 'sport']
+    fields = ['name', 'description', 'admin', 'image', 'sport']
 
     def form_valid(self, form):
         form.instance.admin = self.request.user

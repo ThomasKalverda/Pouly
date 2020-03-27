@@ -23,5 +23,5 @@ class Poule(models.Model):
     def __str__(self):
         return self.name
 
-    # def get_absolute_url(self):
-    #     return reverse('poule-overview', kwargs={'pk': self.id})
+    def get_absolute_url(self):
+        return reverse('poule-overview', kwargs={'pk': self.id})
