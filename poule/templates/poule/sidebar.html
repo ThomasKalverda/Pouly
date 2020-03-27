@@ -30,6 +30,7 @@
                     <li class="sidebar-item {% if sbar == 'rules' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                 href="{% url 'poule-rules' object.id %}" aria-expanded="false"><i
                             class="mdi mdi-gavel"></i><span class="hide-menu">Rules</span></a></li>
+                    {% if user == object.admin %}
                     <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                         <span class="hide-menu">Manage</span><a class="d-flex align-items-center text-muted" href="#"><i
                             class="fas fa-cog"></i>
@@ -43,6 +44,7 @@
                     <li class="sidebar-item {% if sbar == 'info' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                 href="{% url 'poule-info' object.id %}" aria-expanded="false"><i
                             class="mdi mdi-information-outline"></i><span class="hide-menu">Poule Info</span></a></li>
+                    {% endif %}
                     <li class="text-center">
                         <a href="{% url 'lobby-home'%}" ><button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75"><i class="mdi mdi-keyboard-backspace"></i> Back to Lobby</button></a>
 {#                        <button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75" href="'lobby-home'"><i class="mdi mdi-keyboard-backspace"></i> Back to Lobby</button>#}

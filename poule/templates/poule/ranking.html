@@ -1,6 +1,33 @@
 {% extends "poule/sidebar.html" %}
 {% block content %}
-    {% for user in object.users.all %}
-        <h3>{{ user.username }}</h3>
-    {% endfor %}
+    {% with users=object.users.all %}
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ranking</h5>
+                    <div class="table-responsive">
+                        <table id="zero_config" class="table">
+                            <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>User</th>
+                                <th>Points</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for player in scores %}
+                                <tr {% if player == user %} class="table-warning"  {% endif %}} >
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><img src=" {{ player.profile.image.url }} " class="rounded img-table mr-1 ">{{ player.username }}</td>
+                                    <td><span class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
+                            text-align: center;">{{scores|get_item:player}}</span></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endwith %}
 {% endblock content %}
