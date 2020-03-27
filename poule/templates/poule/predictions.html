@@ -17,7 +17,7 @@
     {% for date,game_list in grouped_and_sorted_games %}
         <h4>{{ date|date:"l j F Y" }}</h4>
         {% for game in game_list %}
-            {% with prediction = prediction_dict| get_item:game %}
+            {% with prediction=prediction_dict|get_item:game %}
                 {% if game.result1 and game.result2 %}
                     <div class="card-group card-hover col-8">
                         <div class="card col-2">

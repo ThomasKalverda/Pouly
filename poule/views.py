@@ -62,7 +62,7 @@ class PouleRankingView(DetailView):
         scores = {}
         for user in users:
             scores[user] = Score.objects.filter(user=user, poule=self.get_object()).first().points
-        sorted_d = dict(sorted(scores.items(), key=operator.itemgetter(1),reverse=True))
+        sorted_d = dict(sorted(scores.items(), key=operator.itemgetter(1), reverse=True))
         context['scores'] = sorted_d
         return context
 
@@ -77,7 +77,7 @@ class PoulePredictionsView(FormMixin, DetailView):
         context = super().get_context_data(**kwargs)
         games_grouped_by_date = defaultdict(list)
         for game in self.get_object().games.all():
-            games_grouped_by_date[str(game.date.date())].append(game)
+            games_grouped_by_date[game.date.date()].append(game)
         context['grouped_and_sorted_games'] = sorted(games_grouped_by_date.items())
         user_predictions = self.request.user.predictions.all()
         context['prediction_dict'] = {prediction.game: prediction for prediction in user_predictions}
