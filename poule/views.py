@@ -35,6 +35,24 @@ def get_game_prediction_points(dictionary, key):
     return dictionary.get(key).points
 
 
+def calculate_scores(poule):
+    poule_games = Game.objects.all().filter(poule=poule)
+    poule_predictions = []
+    for game in poule_games:
+        game_predictions = Prediction.objects.all().filter(game=game)
+        for prediction in game_predictions:
+            poule_predictions.append(prediction)
+    poule_scores = Score.objects.filter(poule=poule)
+    for score in poule_scores:
+        new_points = 0
+        for prediction in poule_predictions:
+            if score.user == prediction.user:
+                if prediction.points:
+                    new_points += prediction.points
+        score.points = new_points
+        score.save()
+
+
 class PouleOverviewView(UserPassesTestMixin, DetailView):
     model = Poule
     template_name = 'poule/overview.html'
@@ -179,6 +197,7 @@ class PouleGamesView(FormMixin, DetailView):
         if form.is_valid():
             form.instance.poule = object
             form.save()
+            calculate_scores(object)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -205,6 +224,11 @@ class GameUpdateView(UpdateView):
     model = Game
     template_name = 'poule/games_update.html'
     fields = ['team1', 'team2', 'date', 'result1', 'result2']
+
+    def form_valid(self, form):
+        poule = form.instance.poule
+        calculate_scores(poule)
+        return super().form_valid(form)
 
 
 class GameDeleteView(UserPassesTestMixin, DeleteView):
