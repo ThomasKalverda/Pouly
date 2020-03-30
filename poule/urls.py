@@ -1,6 +1,18 @@
 from django.urls import path
 from . import views
-from .views import PouleOverviewView, PouleGamesView, PouleInfoView, PoulePredictionsView, PouleRankingView, PouleRulesView, PouleTeamsView, PouleDeleteView, TeamUpdateView, TeamDeleteView, GameUpdateView, GameDeleteView
+from .views import \
+    PouleOverviewView, \
+    PouleGamesView, \
+    PouleInfoView, \
+    PoulePredictionsView, \
+    PouleRankingView, \
+    PouleRulesView, \
+    PouleTeamsView, \
+    PouleDeleteView, \
+    TeamUpdateView, \
+    TeamDeleteView, \
+    GameUpdateView, \
+    GameDeleteView
 
 urlpatterns = [
     path('overview/', PouleOverviewView.as_view(), name='poule-overview'),
