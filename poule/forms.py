@@ -12,12 +12,17 @@ PREDICTION_CHOICES = [
 
 
 class CreateTeamForm(forms.ModelForm):
-    class Meta:
+     class Meta:
         model = Team
         fields = ['name', 'image']
 
 
 class CreateGameForm(forms.ModelForm):
+    # def __init__(self, *args, **kwargs):
+        # super(CreateGameForm, self).__init__(*args, **kwargs)  # populates the post
+        # self.fields['team1'].queryset = Team.objects.filter(poule=self.instance.poule)
+        # self.fields['team2'].queryset = Team.objects.filter(poule=self.instance.poule)
+
     class Meta:
         model = Game
         fields = ['team1', 'team2', 'date']

@@ -53,6 +53,35 @@ def calculate_scores(poule):
         score.save()
 
 
+def calculate_prediction_points(poule, game):
+    game_predictions = Prediction.objects.all().filter(game=game)
+    if game.result1 and game.result2:
+        for prediction in game_predictions:
+            diff1 = game.result1 - prediction.prediction1
+            diff2 = game.result2 - prediction.prediction2
+            # determine winner
+            res_winner = 'team1'
+            pred_winner = 'team1'
+            if game.result2 > game.result1:
+                res_winner = 'team2'
+            elif game.result2 == game.result1:
+                res_winner = 'tie'
+            if prediction.prediction2 > prediction.prediction1:
+                pred_winner = 'team2'
+            elif prediction.prediction2 == prediction.prediction1:
+                pred_winner = 'tie'
+            # determine number of points
+            if diff1 == 0 and diff2 == 0:
+                prediction.points = 10
+            elif diff1 == diff2:
+                prediction.points = 6
+            elif res_winner == pred_winner:
+                prediction.points = 4
+            else:
+                prediction.points = 0
+            prediction.save()
+
+
 class PouleOverviewView(UserPassesTestMixin, DetailView):
     model = Poule
     template_name = 'poule/overview.html'
@@ -197,6 +226,7 @@ class PouleGamesView(FormMixin, DetailView):
         if form.is_valid():
             form.instance.poule = object
             form.save()
+            calculate_prediction_points(object, self.get_object())
             calculate_scores(object)
             return self.form_valid(form)
         else:
@@ -225,9 +255,14 @@ class GameUpdateView(UpdateView):
     template_name = 'poule/games_update.html'
     fields = ['team1', 'team2', 'date', 'result1', 'result2']
 
+
     def form_valid(self, form):
         poule = form.instance.poule
-        calculate_scores(poule)
+        game = form.instance
+        if form.is_valid():
+            form.save()
+            calculate_prediction_points(poule, game)
+            calculate_scores(poule)
         return super().form_valid(form)
 
 
