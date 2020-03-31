@@ -17,6 +17,13 @@ class PouleListView(ListView):
     template_name = 'lobby/home.html'
     context_object_name = 'poules'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user.id
+        user_poules = Poule.objects.filter(users__id=user)
+        context['user_poules'] = user_poules
+        return context
+
 
 class PouleCreateView(LoginRequiredMixin, CreateView):
     model = Poule

@@ -120,6 +120,7 @@ class PoulePredictionsView(FormMixin, DetailView):
     form_class = CreatePredictionForm
     success_url = reverse_lazy('poule-predictions')
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         games_grouped_by_date = defaultdict(list)
@@ -149,6 +150,15 @@ class PoulePredictionsView(FormMixin, DetailView):
         else:
             return reverse_lazy('poule-predictions', args=(self.object.id,))
 
+    # def get(self, request, *args, **kwargs):
+    #     #     if not request.user.is_authenticated:
+    #     #         return HttpResponseForbidden()
+    #     #     game = Game.objects.get(pk=request.GET.get('gameid'))
+    #     #     form = self.get_form()
+
+    def get_initial(self):
+        initial = super(PoulePredictionsView, self).get_initial()
+        return initial
     # def get_form_kwargs(self):
     #     kwargs = super(PoulePredictionsView, self).get_form_kwargs()
     #     query_Prediction = self.request.GET.get('Prediction')
@@ -226,11 +236,15 @@ class PouleGamesView(FormMixin, DetailView):
         if form.is_valid():
             form.instance.poule = object
             form.save()
-            calculate_prediction_points(object, self.get_object())
-            calculate_scores(object)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(PouleGamesView, self).get_form_kwargs()
+        # Update the existing form kwargs dict with the poule.
+        kwargs.update({"poule": self.object})
+        return kwargs
 
 
 class TeamUpdateView(UpdateView):

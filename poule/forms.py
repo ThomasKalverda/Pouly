@@ -18,10 +18,10 @@ class CreateTeamForm(forms.ModelForm):
 
 
 class CreateGameForm(forms.ModelForm):
-    # def __init__(self, *args, **kwargs):
-        # super(CreateGameForm, self).__init__(*args, **kwargs)  # populates the post
-        # self.fields['team1'].queryset = Team.objects.filter(poule=self.instance.poule)
-        # self.fields['team2'].queryset = Team.objects.filter(poule=self.instance.poule)
+    def __init__(self, poule, *args, **kwargs):
+        super(CreateGameForm, self).__init__(*args, **kwargs)  # populates the post
+        self.fields['team1'].queryset = Team.objects.filter(poule=poule)
+        self.fields['team2'].queryset = Team.objects.filter(poule=poule)
 
     class Meta:
         model = Game
