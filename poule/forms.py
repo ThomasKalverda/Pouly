@@ -2,12 +2,13 @@ from django import forms
 from .models import Team, Game, Prediction
 
 PREDICTION_CHOICES = [
+    ('', ''),
     (0, 0),
     (1, 1),
     (2, 2),
     (3, 3),
     (4, 4),
-    (5, 5),
+    (5, '5+'),
 ]
 
 
@@ -29,8 +30,8 @@ class CreateGameForm(forms.ModelForm):
 
 
 class CreatePredictionForm(forms.ModelForm):
-    prediction1 = forms.ChoiceField(choices=PREDICTION_CHOICES)
-    prediction2 = forms.ChoiceField(choices=PREDICTION_CHOICES)
+    prediction1 = forms.ChoiceField(choices=PREDICTION_CHOICES, widget=forms.Select(attrs={'class': 'select form-control custom-select font-weight-bold font-20', 'style': 'width: 60px; height: 50px;'}))
+    prediction2 = forms.ChoiceField(choices=PREDICTION_CHOICES, widget=forms.Select(attrs={'class': 'select form-control custom-select font-weight-bold font-20', 'style': 'width: 60px; height: 50px;'}))
 
     class Meta:
         model = Prediction

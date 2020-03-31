@@ -136,7 +136,11 @@ class PoulePredictionsView(FormMixin, DetailView):
             return HttpResponseForbidden()
         game = Game.objects.get(pk=request.POST.get('gameid'))
         form = self.get_form()
+
         if form.is_valid():
+            old_prediction = Prediction.objects.filter(user=self.request.user, game=game)
+            if old_prediction:
+                old_prediction.delete()
             form.instance.game = game
             form.instance.user = self.request.user
             form.save()
@@ -149,69 +153,6 @@ class PoulePredictionsView(FormMixin, DetailView):
             return reverse_lazy('poule-predictions', kwargs={'pk': kwargs['pk']})
         else:
             return reverse_lazy('poule-predictions', args=(self.object.id,))
-
-    # def get(self, request, *args, **kwargs):
-    #     #     if not request.user.is_authenticated:
-    #     #         return HttpResponseForbidden()
-    #     #     game = Game.objects.get(pk=request.GET.get('gameid'))
-    #     #     form = self.get_form()
-
-    def get_initial(self):
-        initial = super(PoulePredictionsView, self).get_initial()
-        return initial
-    # def get_form_kwargs(self):
-    #     kwargs = super(PoulePredictionsView, self).get_form_kwargs()
-    #     query_Prediction = self.request.GET.get('Prediction')
-    #     prediction = Prediction.objects.filter(NumeroIdentification=query_Prediction)
-    #     kwargs['prediction_qs'] = prediction
-    #     u = request.user
-    #     kwargs['user_initial'] = '{lname} {fname}'.format(lname=u.last_name, fname=u.first_name)
-    #     return kwargs
-
-
-# class PoulePredictionsView(FormMixin, DetailView):
-#     model = Poule
-#     template_name = 'poule/predictions.html'
-#     ordering = ['-date']
-#     form_class = CreatePredictionForm
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         date_list = []
-#         complete_date_list = list(
-#             self.get_object().games.annotate(date_formatted=TruncDay('date')).values('date_formatted'))
-#         complete_game_list = list(self.get_object().games.annotate(date_formatted=TruncDay('date')))
-#         for date in complete_date_list:
-#             if date['date_formatted'] not in date_list:
-#                 date_list.append(date['date_formatted'])
-#         date_dict = {el: [] for el in date_list}
-#         for game in complete_game_list:
-#             date_dict[game.date_formatted].append(game)
-#         context['date_dict'] = date_dict
-#         return context
-#
-#     def post(self, request, *args, **kwargs):
-#         if not request.user.is_authenticated:
-#             return HttpResponseForbidden()
-#         object = Poule.objects.get(pk=self.kwargs['pk'])
-#         game = Game.objects.get(pk=1)
-#         self.object = self.get_object()
-#         if request.method == 'POST':
-#             form = self.get_form()
-#         else:
-#             form = self.get_form()
-#         if form.is_valid():
-#             form.instance.poule = object
-#             form.instance.game = game
-#             form.instance.user = self.request.user
-#             form.save()
-#             return self.form_valid(form)
-#         else:
-#             return self.form_invalid(form)
-#
-#     def get_success_url(self):
-#         return reverse('poule-predictions', kwargs={'pk': self.object.pk})
-# # class PouleSavePrediction(FormMixin, DetailView):
 
 
 class PouleRulesView(DetailView):
