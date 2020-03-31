@@ -204,6 +204,9 @@ class TeamDeleteView(DeleteView):
             return True
         return False
 
+    def get_success_url(self):
+        return reverse('poule-teams', kwargs={'pk': self.object.poule.pk})
+
 
 class GameUpdateView(UpdateView):
     model = Game
@@ -220,16 +223,23 @@ class GameUpdateView(UpdateView):
             calculate_scores(poule)
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse('poule-games', kwargs={'pk': self.object.poule.pk})
+
 
 class GameDeleteView(UserPassesTestMixin, DeleteView):
     model = Game
     template_name = 'poule/games_delete.html'
 
+
     def test_func(self):
-        poule = self.get_object()
+        poule = self.get_object().poule
         if self.request.user == poule.admin:
             return True
         return False
+
+    def get_success_url(self):
+        return reverse('poule-games', kwargs={'pk': self.object.poule.pk})
 
 
 class PouleTeamsView(FormMixin, DetailView):

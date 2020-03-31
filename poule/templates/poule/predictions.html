@@ -133,6 +133,7 @@
                                             {% else %}
                                                 {{ form.prediction1 }}
                                             {% endif %}
+                                             {% if prediction.prediction2 %}
                                             <select
                                                     class="select form-control custom-select font-weight-bold font-20"
                                                     style="width: 60px; height:50px;"
@@ -145,6 +146,9 @@
                                                 <option value="4">4</option>
                                                 <option value="5">5+</option>
                                             </select>
+                                                 {% else %}
+                                                 {{ form.prediction2 }}
+                                            {% endif %}
                                         </div>
 
                                     </div>
