@@ -14,7 +14,7 @@ class Sport(models.Model):
 class Poule(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=300, blank=True)
-    image = models.ImageField(default='poule_pics/default.jpg', upload_to='poule_pics')
+    image = models.ImageField(default='poule_pics/default-poule.jpg', upload_to='poule_pics')
     sport = models.ForeignKey(Sport, on_delete=models.SET_NULL, null=True)
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='poules')
     users = models.ManyToManyField(User)

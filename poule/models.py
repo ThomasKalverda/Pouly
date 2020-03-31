@@ -40,7 +40,7 @@ class Prediction(models.Model):
     points = models.SmallIntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.game}: {self.prediction1} vs {self.prediction2}'
+        return f'{self.user} - {self.game}: {self.prediction1} vs {self.prediction2}'
 
 
 class Score(models.Model):

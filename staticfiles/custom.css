@@ -91,12 +91,13 @@
     height:30px;
 }
 
-.saved-alert-row {
-    position: absolute;
-    top: 0;
-}
 
 .group-border {
   border-style: solid;
   border-width: 5px;
+}
+
+select .prediction-select {
+    width: 60px;  !important
+    height:50px; !important
 }

@@ -39,26 +39,13 @@
                                         {{ form.game.value }}
                                         <select disabled
                                                 class="select form-control custom-select font-weight-bold font-20"
-                                                onselect=""
                                                 style="width: 60px; height:50px;">
                                             <option>{{ prediction.prediction1 }}</option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5+</option>
                                         </select>
                                         <select disabled
-                                                class="select disabled form-control custom-select font-weight-bold font-20"
+                                                class="select form-control custom-select font-weight-bold font-20"
                                                 style="width: 60px; height:50px;">
                                             <option>{{ prediction.prediction2 }}</option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5+">5+</option>
                                         </select>
                                     </div>
 
@@ -80,11 +67,11 @@
                                         <div class="button-group">
                                             <div class="row">
                                                 <button type="button"
-                                                        class="btn btn-lg btn-outline-secondary disabled">{{ game.result1 }}
+                                                        class="btn btn-lg btn-outline-secondary disabled border">{{ game.result1 }}
                                                 </button>
 
                                                 <button type="button"
-                                                        class="btn btn-lg btn-outline-secondary disabled">{{ game.result2 }}
+                                                        class="btn btn-lg btn-outline-secondary disabled border">{{ game.result2 }}
                                                 </button>
                                             </div>
 
@@ -129,30 +116,39 @@
                                     </div>
                                     <div class=" col-3">
                                         <div class="row justify-content-center">
-                                            {{ form.prediction1 }}
-                                            {{ form.prediction2 }}
-
-                                            {#                                        <select class="select form-control custom-select font-weight-bold font-20"#}
-                                            {#                                                onselect=""#}
-                                            {#                                                style="width: 60px; height:50px;">#}
-                                            {#                                            <option></option>#}
-                                            {#                                            <option value="0">0</option>#}
-                                            {#                                            <option value="1">1</option>#}
-                                            {#                                            <option value="2">2</option>#}
-                                            {#                                            <option value="3">3</option>#}
-                                            {#                                            <option value="4">4</option>#}
-                                            {#                                            <option value="5">5+</option>#}
-                                            {#                                        </select>#}
-                                            {#                                        <select class="select form-control custom-select font-weight-bold font-20"#}
-                                            {#                                                style="width: 60px; height:50px;">#}
-                                            {#                                            <option></option>#}
-                                            {#                                            <option value="0">0</option>#}
-                                            {#                                            <option value="1">1</option>#}
-                                            {#                                            <option value="2">2</option>#}
-                                            {#                                            <option value="3">3</option>#}
-                                            {#                                            <option value="4">4</option>#}
-                                            {#                                            <option value="5+">5+</option>#}
-                                            {#                                        </select>#}
+                                            {% if prediction.prediction1 %}
+                                                <select
+                                                        class="select form-control custom-select font-weight-bold font-20"
+                                                        style="width: 60px; height:50px;"
+                                                        name="{{ form.prediction1.name }}">
+                                                    <option>{{ prediction.prediction1 }}</option>
+                                                    <optgroup label=""></optgroup>
+                                                    <option value="0">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5+</option>
+                                                </select>
+                                            {% else %}
+                                                {{ form.prediction1 }}
+                                            {% endif %}
+                                             {% if prediction.prediction2 %}
+                                            <select
+                                                    class="select form-control custom-select font-weight-bold font-20"
+                                                    style="width: 60px; height:50px;"
+                                                    name="{{ form.prediction2.name }}">
+                                                <option>{{ prediction.prediction2 }}</option>
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5+</option>
+                                            </select>
+                                                 {% else %}
+                                                 {{ form.prediction2 }}
+                                            {% endif %}
                                         </div>
 
                                     </div>
@@ -172,7 +168,7 @@
                                         <div class="col-8">
 
                                             <div class="form-group">
-                                                <div class="p-t-20">
+                                                <div class="pt-2">
                                                     <button class="btn btn-lg btn-outline-success" type="submit">
                                                         Save
                                                     </button>
