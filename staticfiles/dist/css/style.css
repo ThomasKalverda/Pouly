@@ -12212,9 +12212,9 @@ body .jqstooltip {
 .select2-container--default .select2-selection--single .select2-selection__rendered,
 .select2-container--default .select2-selection--single .select2-selection__arrow,
 .select2-container--default .select2-selection--multiple {
-  border-color: #e9ecef;
+  /*border-color: #e9ecef;*/
   height: 40px;
-  color: #3e5569;
+  /*color: #3e5569;*/
   line-height: 40px; }
 
 .select2-container--default .select2-selection--multiple {

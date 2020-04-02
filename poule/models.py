@@ -26,7 +26,7 @@ class Game(models.Model):
     date = models.DateTimeField(auto_now=False, auto_now_add=False, default=timezone.now)
 
     def __str__(self):
-        return f'{self.poule}: {self.team1} vs {self.team2} '
+        return f'{self.poule}: {self.team1} vs {self.team2} at {self.date}'
 
     def get_absolute_url(self):
         return reverse('poule-games', kwargs={'pk': self.poule.id})

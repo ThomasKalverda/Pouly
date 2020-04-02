@@ -12,7 +12,8 @@ from .views import \
     TeamUpdateView, \
     TeamDeleteView, \
     GameUpdateView, \
-    GameDeleteView
+    GameDeleteView, \
+    PouleCompetitionView
 
 urlpatterns = [
     path('overview/', PouleOverviewView.as_view(), name='poule-overview'),
@@ -25,6 +26,7 @@ urlpatterns = [
     path('games/<int:pk>/update/', GameUpdateView.as_view(), name='game-update'),
     path('games/<int:pk>/delete/', GameDeleteView.as_view(), name='game-delete'),
     path('teams/', PouleTeamsView.as_view(), name='poule-teams'),
+    path('competition/', PouleCompetitionView.as_view(), name='poule-competition'),
     path('info/', PouleInfoView.as_view(), name='poule-info'),
     path('delete/', PouleDeleteView.as_view(), name='poule-delete')
 ]

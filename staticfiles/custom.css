@@ -97,7 +97,7 @@
   border-width: 5px;
 }
 
-select .prediction-select {
-    width: 60px;  !important
-    height:50px; !important
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #2255a4;
+    border: #2255a4;
 }

@@ -12,42 +12,60 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav" class="p-t-30">
                     <li class="sidebar-item">
-                        <img class=img-responsive" width = "100%" src="{{ object.image.url }}"
+                        <img class=img-responsive" width="100%" src="{{ object.image.url }}"
                              alt="Card image cap">
                     </li>
                     <li class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted border-bottom">
                         <h4>{{ object.name }}</h4>
                     </li>
-                    <li class="sidebar-item {% if sbar == 'overview' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                href="{% url 'poule-overview' object.id %}" aria-expanded="false"><i
+                    <li class="sidebar-item {% if sbar == 'overview' %}selected{% endif %}"><a
+                            class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'poule-overview' object.id %}" aria-expanded="false"><i
                             class="mdi mdi-view-dashboard"></i><span class="hide-menu">Overview</span></a></li>
-                    <li class="sidebar-item {% if sbar == 'ranking' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                href="{% url 'poule-ranking' object.id %}" aria-expanded="false"><i
+                    <li class="sidebar-item {% if sbar == 'ranking' %}selected{% endif %}"><a
+                            class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'poule-ranking' object.id %}" aria-expanded="false"><i
                             class="mdi mdi-poll"></i><span class="hide-menu">Ranking</span></a></li>
-                    <li class="sidebar-item {% if sbar == 'predictions' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                href="{% url 'poule-predictions' object.id %}" aria-expanded="false"><i
+                    <li class="sidebar-item {% if sbar == 'predictions' %}selected{% endif %}"><a
+                            class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'poule-predictions' object.id %}" aria-expanded="false"><i
                             class="mdi mdi-chart-bubble"></i><span class="hide-menu">Predictions</span></a></li>
-                    <li class="sidebar-item {% if sbar == 'rules' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                href="{% url 'poule-rules' object.id %}" aria-expanded="false"><i
+                    <li class="sidebar-item {% if sbar == 'rules' %}selected{% endif %}"><a
+                            class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'poule-rules' object.id %}" aria-expanded="false"><i
                             class="mdi mdi-gavel"></i><span class="hide-menu">Rules</span></a></li>
                     {% if user == object.admin %}
-                    <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                        <span class="hide-menu">Manage</span><a class="d-flex align-items-center text-muted" href="#"><i
-                            class="fas fa-cog"></i>
-                    </a></h4>
-                    <li class="sidebar-item {% if sbar == 'games' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                href="{% url 'poule-games' object.id %}" aria-expanded="false"><i
-                            class="mdi mdi-flag-checkered"></i><span class="hide-menu">Games</span></a></li>
-                    <li class="sidebar-item {% if sbar == 'teams' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                href="{% url 'poule-teams' object.id %}" aria-expanded="false"><i
-                            class="mdi mdi-account-multiple"></i><span class="hide-menu">Teams</span></a></li>
-                    <li class="sidebar-item {% if sbar == 'info' %}selected{% endif %}"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                href="{% url 'poule-info' object.id %}" aria-expanded="false"><i
-                            class="mdi mdi-information-outline"></i><span class="hide-menu">Poule Info</span></a></li>
+                        <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                            <span class="hide-menu">Manage</span><a class="d-flex align-items-center text-muted"
+                                                                    href="#"><i
+                                class="fas fa-cog"></i>
+                        </a></h4>
+                        <li class="sidebar-item {% if sbar == 'games' %}selected{% endif %}"><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-games' object.id %}" aria-expanded="false"><i
+                                class="mdi mdi-flag-checkered"></i><span class="hide-menu">Games</span></a></li>
+                        <li class="sidebar-item {% if sbar == 'teams' %}selected{% endif %}"><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-teams' object.id %}" aria-expanded="false"><i
+                                class="mdi mdi-account-multiple"></i><span class="hide-menu">Teams</span></a></li>
+                        <li class="sidebar-item {% if sbar == 'info' %}selected{% endif %}"><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-competition' object.id %}" aria-expanded="false"><i
+                                class="mdi mdi-calendar-range"></i><span class="hide-menu">Competition Maker</span></a>
+                        </li>
+                        <li class="sidebar-item {% if sbar == 'info' %}selected{% endif %}"><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-info' object.id %}" aria-expanded="false"><i
+                                class="mdi mdi-information-outline"></i><span class="hide-menu">Poule Info</span></a>
+                        </li>
                     {% endif %}
                     <li class="text-center">
-                        <a href="{% url 'lobby-home'%}" ><button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75"><i class="mdi mdi-keyboard-backspace"></i> Back to Lobby</button></a>
-{#                        <button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75" href="'lobby-home'"><i class="mdi mdi-keyboard-backspace"></i> Back to Lobby</button>#}
+                        <a href="{% url 'lobby-home' %}">
+                            <button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75"><i
+                                    class="mdi mdi-keyboard-backspace"></i> Back to Lobby
+                            </button>
+                        </a>
+                        {#                        <button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75" href="'lobby-home'"><i class="mdi mdi-keyboard-backspace"></i> Back to Lobby</button>#}
                     </li>
 
 
