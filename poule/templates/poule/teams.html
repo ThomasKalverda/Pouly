@@ -55,7 +55,37 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <div class="p-t-20">
-                                        <button class="btn btn-block btn-lg btn-outline-success" type="submit">Add
+                                        <button class="btn btn-block btn-lg btn-outline-success" name="add" type="submit">Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+             <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Generate Random Teams</h5>
+                    <form class="form-horizontal m-t-20" method="POST" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="row p-b-30">
+                            <div class="col-12">
+                                <fieldset class="form-group">
+
+                                        <label for="numberofteams" class=" control-label col-form-label">Number of random teams</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" name='number' class="form-control" id="numberofteams" placeholder="Max. 32">
+                                        </div>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="p-t-20">
+                                        <button class="btn btn-block btn-lg btn-outline-primary" name="generate" type="submit">Generate
                                         </button>
                                     </div>
                                 </div>

@@ -1,3 +1,4 @@
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -16,6 +17,10 @@ from collections import OrderedDict
 from django.template.defaulttags import register
 import datetime, math
 from distutils.util import strtobool
+from PIL import Image
+from django.templatetags.static import static
+from django.conf import settings
+import pathlib
 
 
 @register.filter
@@ -141,6 +146,31 @@ def generate_games_KO(form, poule):
                 matches.append((team, team_list[i]))
 
     print(matches)
+
+
+def generate_teams(number, poule):
+    import os
+    # directory = r'C:\Users\thoma\Repositories\PycharmProjects\Pouly\staticfiles\assets\images\randomteams'
+    # url = pathlib.PurePath(static('assets/images/randomteams'))
+    # all_teams = []
+    # for entry in os.scandir(directory):
+    #     if (entry.path.endswith(".jpg")
+    #         or entry.path.endswith(".png")) and entry.is_file():
+    #         team = Team(name=entry.name.split('.')[0], image=entry, poule=poule)
+    #         all_teams.append(team)
+    #
+    # for i in range(number):
+    #     index = random.randint(0, len(all_teams)-1)
+    #     print(all_teams[index])
+    #     random_team = all_teams[index]
+    #     random_team.save()
+    # for i in range(number):
+    #     index = random.randint(1, 64)
+    #     image = os.path.join(static('assets/images/randomteams/'),os.path.
+    pass
+
+
+
 
 class PouleOverviewView(UserPassesTestMixin, DetailView):
     model = Poule
@@ -313,12 +343,19 @@ class PouleTeamsView(FormMixin, DetailView):
         object = Poule.objects.get(pk=self.kwargs['pk'])
         self.object = self.get_object()
         form = self.get_form()
-        if form.is_valid():
-            form.instance.poule = object
-            form.save()
+        if 'add' in request.POST:
+            if form.is_valid():
+                form.instance.poule = object
+                form.save()
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        elif 'generate' in request.POST:
+            number = int(form.data['number'])
+            generate_teams(number, object)
             return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+
+
 
 
 class PouleCompetitionView(FormMixin, DetailView):
