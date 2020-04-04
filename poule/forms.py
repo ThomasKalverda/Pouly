@@ -1,5 +1,5 @@
 from django import forms
-from .models import Team, Game, Prediction
+from .models import Team, Game, Prediction, Poule, User
 
 PREDICTION_CHOICES = [
     ('', ''),
@@ -53,10 +53,22 @@ GAME_TIMES = [
     ('23', '23:00'),
 
 ]
-TRUE_FALSE_CHOICES = (
+
+TRUE_FALSE_CHOICES = [
     (True, 'Yes'),
     (False, 'No')
-)
+]
+
+
+class PouleUpdateForm(forms.ModelForm):
+    def __init__(self, poule, *args, **kwargs):
+        super(PouleUpdateForm, self).__init__(*args, **kwargs)  # populates the post
+        self.fields['admin'].queryset = User.objects.filter(poule=poule)
+
+    class Meta:
+        model = Poule
+        fields = ['name', 'description', 'admin', 'image', 'sport']
+
 
 class CreateTeamForm(forms.ModelForm):
     class Meta:

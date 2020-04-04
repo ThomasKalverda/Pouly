@@ -26,11 +26,12 @@
                             <tbody>
                             {% for game in object.games.all %}
                                 <tr>
-                                    <td>{{ game.date|date:"d-m-Y, H:i"  }}</td>
-                                    <td><img src=" {{ game.team1.image.url }} " class="rounded img-table mr-1">{{ game.team1.name }}</td>
+                                    <td>{{ game.date|date:"Y-m-d, H:i" }}</td>
+{# #}
+                                    <td><img src=" {{ game.team1.image.url }} " class="rounded img-table mr-2 shadow">{{ game.team1.name }}</td>
                                     <td>{{ game.result1 }} - {{ game.result2 }}</td>
 
-                                    <td><img src=" {{ game.team2.image.url }} " class="rounded img-table mr-1">{{ game.team2.name }}</td>
+                                    <td><img src=" {{ game.team2.image.url }} " class="rounded img-table mr-2 shadow" >{{ game.team2.name }}</td>
                                     <td>
                                         <a href="{{ game.pk }}/update/" class="btn btn-outline-info">Edit</a>
                                         <a href="{{ game.pk }}/delete/" class="btn btn-outline-danger">Delete</a>

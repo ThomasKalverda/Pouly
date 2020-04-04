@@ -20,10 +20,10 @@
 
   min-height: calc(100vh - 180px); }
 
-.main-wrapper {
-    padding-left: 100px;
-    background-color: #eef5f9 ;
-}
+/*.main-wrapper {*/
+/*    padding-left: 100px;*/
+/*    background-color: #eef5f9 ;*/
+/*}*/
 
 .card-block {
     width: 18rem;
@@ -101,3 +101,11 @@
     background-color: #2255a4;
     border: #2255a4;
 }
+
+.user-message {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    width: auto;
+}
+

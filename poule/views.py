@@ -12,7 +12,7 @@ import random
 from django.db.models.functions import TruncDay
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin, FormView
-from .forms import CreateTeamForm, CreateGameForm, CreatePredictionForm, CompetitionMakerForm
+from .forms import CreateTeamForm, CreateGameForm, CreatePredictionForm, CompetitionMakerForm, PouleUpdateForm
 from collections import OrderedDict
 from django.template.defaulttags import register
 import datetime, math
@@ -21,7 +21,7 @@ from PIL import Image
 from django.templatetags.static import static
 from django.conf import settings
 import pathlib
-
+from django.contrib import messages
 
 @register.filter
 def get_game_prediction1(dictionary, key):
@@ -215,6 +215,8 @@ class PoulePredictionsView(FormMixin, DetailView):
         games_grouped_by_date = defaultdict(list)
         for game in self.get_object().games.all():
             games_grouped_by_date[game.date.date()].append(game)
+        for key, value in games_grouped_by_date.items():
+            value.sort(key=lambda r: r.date)
         context['grouped_and_sorted_games'] = sorted(games_grouped_by_date.items())
         user_predictions = self.request.user.predictions.all()
         context['prediction_dict'] = {prediction.game: prediction for prediction in user_predictions}
@@ -266,6 +268,7 @@ class PouleGamesView(FormMixin, DetailView):
         if form.is_valid():
             form.instance.poule = object
             form.save()
+            messages.success(request, f"Game {form.cleaned_data.get('team1')} vs {form.cleaned_data.get('team2')} added!")
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -282,6 +285,12 @@ class TeamUpdateView(UpdateView):
     template_name = 'poule/teams_update.html'
     fields = ['name', 'image']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        poule = self.object.poule
+        context['poule'] = poule
+        return context
+
 
 class TeamDeleteView(DeleteView):
     model = Team
@@ -293,6 +302,12 @@ class TeamDeleteView(DeleteView):
             return True
         return False
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        poule = self.object.poule
+        context['poule'] = poule
+        return context
+    #
     def get_success_url(self):
         return reverse('poule-teams', kwargs={'pk': self.object.poule.pk})
 
@@ -314,6 +329,12 @@ class GameUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('poule-games', kwargs={'pk': self.object.poule.pk})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        poule = self.object.poule
+        context['poule'] = poule
+        return context
+
 
 class GameDeleteView(UserPassesTestMixin, DeleteView):
     model = Game
@@ -324,6 +345,12 @@ class GameDeleteView(UserPassesTestMixin, DeleteView):
         if self.request.user == poule.admin:
             return True
         return False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        poule = self.object.poule
+        context['poule'] = poule
+        return context
 
     def get_success_url(self):
         return reverse('poule-games', kwargs={'pk': self.object.poule.pk})
@@ -347,6 +374,8 @@ class PouleTeamsView(FormMixin, DetailView):
             if form.is_valid():
                 form.instance.poule = object
                 form.save()
+                messages.success(request,
+                                 f"Team {form.cleaned_data.get('name')} added!")
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
@@ -405,11 +434,7 @@ class PouleCompetitionView(FormMixin, DetailView):
 class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Poule
     template_name = 'lobby/poule_info.html'
-    fields = ['name', 'description', 'admin', 'image', 'sport']
-
-    def form_valid(self, form):
-        form.instance.admin = self.request.user
-        return super().form_valid(form)
+    form_class = PouleUpdateForm
 
     def test_func(self):
         poule = self.get_object()
@@ -417,6 +442,11 @@ class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+    def get_form_kwargs(self):
+        kwargs = super(PouleInfoView, self).get_form_kwargs()
+        # Update the existing form kwargs dict with the poule.
+        kwargs.update({"poule": self.object})
+        return kwargs
 
 class PouleDeleteView(DeleteView):
     model = Poule
@@ -427,31 +457,3 @@ class PouleDeleteView(DeleteView):
         if self.request.user == poule.admin:
             return True
         return False
-
-
-def overview(request):
-    return render(request, 'poule/overview.html', {'sbar': 'overview'})
-
-
-def ranking(request):
-    return render(request, 'poule/ranking.html', {'sbar': 'ranking'})
-
-
-def predictions(request):
-    return render(request, 'poule/predictions.html', {'sbar': 'predictions'})
-
-
-def games(request):
-    return render(request, 'poule/games.html', {'sbar': 'games'})
-
-
-def rules(request):
-    return render(request, 'poule/rules.html', {'sbar': 'rules'})
-
-
-def teams(request):
-    return render(request, 'poule/teams.html', {'sbar': 'teams'})
-
-
-def info(request):
-    return render(request, 'poule/info.html', {'sbar': 'info'})

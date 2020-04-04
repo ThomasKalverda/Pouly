@@ -1,18 +1,11 @@
 {% extends "poule/sidebar.html" %}
 {% block content %}
-    <div class="row page-breadcrumb ">
-        <div class="col-3 d-flex  align-items-center border-bottom border-dark">
-            <h3 class="page-title mb-2 ">Predictions</h3>
-            <hr>
-
+    <div class="card col-8">
+        <div class="card-body">
+           <h5 class="card-title">Predictions</h5>
         </div>
-    </div>
-    <br>
 
-    {% for game,prediction in prediction_dict.items %}
-        <h6>{{ game.team1 }} - {{ game.team2 }}: {{ prediction.prediction1 }} - {{ prediction.prediction2 }}</h6>
-    {% endfor %}
-    {{ form.prediction1 }} {{ form.prediction2 }}
+    </div>
 
     {% for date,game_list in grouped_and_sorted_games %}
         <h4>{{ date|date:"l j F Y" }}</h4>
