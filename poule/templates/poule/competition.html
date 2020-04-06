@@ -2,17 +2,17 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-    <div class="row page-breadcrumb ">
-        <div class="col-3 d-flex  align-items-center">
-            <h4 class="page-title mb-2 ">Competition</h4>
-            <hr>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col-8">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Competition Maker</h5>
+                    <p>Select teams, days and times to generate games. Each team will face each other team once or twice, depending
+                    on whether you select Return Games. The teams for each game are picked with the Round Robin algorithm.
+                        The dates for the games are determined by the start date, game days and games per day.
+                        Starting with the start date each selected game day will get
+                        the number of games per day on the selected times.  </p>
                     <form class="form-horizontal m-t-20" method="POST" enctype='multipart/form-data'>
                         {% csrf_token %}
                         <div class="row p-b-30">

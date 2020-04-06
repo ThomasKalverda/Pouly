@@ -22,6 +22,8 @@ from django.templatetags.static import static
 from django.conf import settings
 import pathlib
 from django.contrib import messages
+from django.utils import timezone
+
 
 @register.filter
 def get_game_prediction1(dictionary, key):
@@ -41,6 +43,7 @@ def get_item(dictionary, key):
 @register.filter
 def get_game_prediction_points(dictionary, key):
     return dictionary.get(key).points
+
 
 
 def calculate_scores(poule):
@@ -63,7 +66,7 @@ def calculate_scores(poule):
 
 def calculate_prediction_points(poule, game):
     game_predictions = Prediction.objects.all().filter(game=game)
-    if game.result1 and game.result2:
+    if game.result1 > -1 and game.result2 > -1:
         for prediction in game_predictions:
             diff1 = game.result1 - prediction.prediction1
             diff2 = game.result2 - prediction.prediction2
@@ -90,7 +93,7 @@ def calculate_prediction_points(poule, game):
             prediction.save()
 
 
-def generate_games_CO(form, poule):
+def generate_games_CO(form, poule, request):
     team_list = list(form['teams'])
     if len(team_list) % 2:  # if odd number of teams, add dummy team to generate matches correctly
         dummy = Team(name='dummy')
@@ -99,7 +102,7 @@ def generate_games_CO(form, poule):
     matches = []
     return_matches = []
     for round in range(1, n):
-        for i in range(int(n/2)):
+        for i in range(int(n / 2)):
             matches.append((team_list[i], team_list[n - 1 - i]))
             return_matches.append((team_list[n - 1 - i], team_list[i]))
         team_list.insert(1, team_list.pop())
@@ -109,9 +112,10 @@ def generate_games_CO(form, poule):
             matches.append(match)
 
     if len(list(form['teams'])) % 2:
-        matches = [match for match in matches if not match[0] == dummy and not match[1] == dummy]  # Remove all matches with team dummy
+        matches = [match for match in matches if
+                   not match[0] == dummy and not match[1] == dummy]  # Remove all matches with team dummy
 
-    number_of_game_days = math.ceil(len(matches)/form['games_per_day'])
+    number_of_game_days = math.ceil(len(matches) / form['games_per_day'])
     date_list = []
     date = form['start_date']
     while len(date_list) < number_of_game_days:
@@ -133,6 +137,8 @@ def generate_games_CO(form, poule):
                 gamedate = date + datetime.timedelta(hours=game_times_deq[0])
                 game = Game(team1=team1, team2=team2, date=gamedate, poule=poule)
                 game.save()
+                messages.success(request,
+                                 f"Game {game.team1} vs {game.team2} on {game.date.strftime('%A %B %d')} at {game.date.strftime('%H:%M')}  added!")
                 print(f'Game created: {game}')
             game_times_deq.rotate(-1)
 
@@ -170,11 +176,20 @@ def generate_teams(number, poule):
     pass
 
 
-
-
 class PouleOverviewView(UserPassesTestMixin, DetailView):
     model = Poule
     template_name = 'poule/overview.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        upcoming_games = Game.objects.filter(poule=self.get_object(), date__gte=timezone.now()).order_by('date')[:3]
+        played_games = Game.objects.filter(result1__gte=0, result2__gte=0, poule=self.get_object(),
+                                           date__lte=timezone.now()).order_by('-date')
+        user_predictions = self.request.user.predictions.all()
+        context['prediction_dict'] = {prediction.game: prediction for prediction in user_predictions}
+        context['upcoming_games'] = upcoming_games
+        context['played_games'] = played_games
+        return context
 
     def test_func(self):
         poule = self.get_object()
@@ -220,6 +235,13 @@ class PoulePredictionsView(FormMixin, DetailView):
         context['grouped_and_sorted_games'] = sorted(games_grouped_by_date.items())
         user_predictions = self.request.user.predictions.all()
         context['prediction_dict'] = {prediction.game: prediction for prediction in user_predictions}
+        point_dict = {10: 0, 6: 0, 4: 0, 'total': 0}
+        for prediction in user_predictions:
+            if prediction.points and prediction.game.poule == self.get_object():
+                point_dict[prediction.points] += prediction.points
+                point_dict['total'] += prediction.points
+
+        context['point_dict'] = point_dict
         return context
 
     def post(self, request, *args, **kwargs):
@@ -235,6 +257,8 @@ class PoulePredictionsView(FormMixin, DetailView):
             form.instance.game = game
             form.instance.user = self.request.user
             form.save()
+            messages.success(request,
+                             f"Prediction {form.instance.game.team1} {form.cleaned_data.get('prediction1')} - {form.cleaned_data.get('prediction2')} {form.instance.game.team2} saved!")
             return HttpResponseRedirect(self.get_success_url(**kwargs))
         else:
             return self.form_invalid(form)
@@ -267,8 +291,11 @@ class PouleGamesView(FormMixin, DetailView):
         form = self.get_form()
         if form.is_valid():
             form.instance.poule = object
+            date = form.cleaned_data.get('date')
             form.save()
-            messages.success(request, f"Game {form.cleaned_data.get('team1')} vs {form.cleaned_data.get('team2')} added!")
+            messages.success(request,
+                             f"Game {form.cleaned_data.get('team1')} vs {form.cleaned_data.get('team2')} on {date.strftime('%A %B %d')} at {date.strftime('%H:%M')}  added!")
+
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -307,6 +334,7 @@ class TeamDeleteView(DeleteView):
         poule = self.object.poule
         context['poule'] = poule
         return context
+
     #
     def get_success_url(self):
         return reverse('poule-teams', kwargs={'pk': self.object.poule.pk})
@@ -385,8 +413,6 @@ class PouleTeamsView(FormMixin, DetailView):
             return self.form_valid(form)
 
 
-
-
 class PouleCompetitionView(FormMixin, DetailView):
     model = Poule
     template_name = 'poule/competition.html'
@@ -410,10 +436,7 @@ class PouleCompetitionView(FormMixin, DetailView):
         form.data['start_date'] = date
         form.data['game_times'] = time_list
         if form.is_valid():
-            if form.cleaned_data['type'] == 'CO':
-                generate_games_CO(form.cleaned_data, object)
-            else:
-                generate_games_KO(form.cleaned_data, object)
+            generate_games_CO(form.cleaned_data, object, request)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -447,6 +470,7 @@ class PouleInfoView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # Update the existing form kwargs dict with the poule.
         kwargs.update({"poule": self.object})
         return kwargs
+
 
 class PouleDeleteView(DeleteView):
     model = Poule

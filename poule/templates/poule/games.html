@@ -1,12 +1,12 @@
 {% extends "poule/sidebar.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="row page-breadcrumb ">
-        <div class="col-3 d-flex  align-items-center">
-            <h4 class="page-title mb-2 ">Games</h4>
-            <hr>
-        </div>
-    </div>
+{#    <div class="row page-breadcrumb ">#}
+{#        <div class="col-3 d-flex  align-items-center">#}
+{#            <h4 class="page-title mb-2 ">Games</h4>#}
+{#            <hr>#}
+{#        </div>#}
+{#    </div>#}
     <div class="row">
         <div class="col-8">
             <div class="card">
@@ -68,6 +68,14 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add Multiple Games</h5>
+                    <p>Generate multiple games at once with the Competition Maker!</p>
+                    <a href="{% url 'poule-competition' poule.id %}" class="btn btn-block btn-lg btn-outline-primary">Go to Competition Maker</a> </p>
+
                 </div>
             </div>
         </div>

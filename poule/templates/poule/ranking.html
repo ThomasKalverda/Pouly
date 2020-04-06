@@ -17,8 +17,9 @@
                             <tbody>
                             {% for player in scores %}
                                 <tr {% if player == user %} class="table-warning"  {% endif %}} >
-                                    <td>{{ forloop.counter }}</td>
-                                    <td><img src=" {{ player.profile.image.url }} " class="rounded img-table mr-1 ">{{ player.username }}</td>
+                                    <td>{{ forloop.counter }} {% if forloop.counter == 1 %} <i class="mdi mdi-trophy font-20"></i>{% endif %}</td>
+                                    <td><img src=" {{ player.profile.image.url }} " class="rounded img-table mr-1 ">{{ player.username }} {% if player == poule.admin %} <i
+                                class="fas fa-cog font-20"></i> {% endif %}</td>
                                     <td><span class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
                             text-align: center;">{{scores|get_item:player}}</span></td>
                                 </tr>

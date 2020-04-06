@@ -11,10 +11,10 @@ PREDICTION_CHOICES = [
     (5, '5+'),
 ]
 
-COMPETITION_TYPES = [
-    ('KO', 'Knock-Out'),
-    ('CO', 'Competition')
-]
+# COMPETITION_TYPES = [
+#     ('KO', 'Knock-Out'),
+#     ('CO', 'Competition')
+# ]
 
 GAME_DAYS = [
     (0, 'Monday'),
@@ -101,9 +101,9 @@ class CreatePredictionForm(forms.ModelForm):
 
 
 class CompetitionMakerForm(forms.Form):
-    type = forms.ChoiceField(choices=COMPETITION_TYPES, widget=forms.Select(
-        attrs={'class': "form-control m-t-15",
-               'style': "height: 36px; width: 100%; border-color: #aaa; border-radius:4px;"}))
+    # type = forms.ChoiceField(choices=COMPETITION_TYPES, widget=forms.Select(
+    #     attrs={'class': "form-control m-t-15",
+    #            'style': "height: 36px; width: 100%; border-color: #aaa; border-radius:4px;"}))
     teams = forms.ModelMultipleChoiceField(queryset=Team.objects.all(), widget=forms.Select(
         attrs={'class': "select2 form-control m-t-15", 'multiple': "multiple", 'style': "height: 36px;width: 100%;"}))
     home_and_away = forms.ChoiceField(choices=TRUE_FALSE_CHOICES, widget=forms.Select(attrs={'class': "form-control m-t-15",

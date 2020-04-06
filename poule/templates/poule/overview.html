@@ -1,74 +1,144 @@
 {% extends "poule/sidebar.html" %}
 {% load static %}
 {% block content %}
-    <h1>Overview</h1>
+    {% if not played_games and not upcoming_games %}
+        <h4>No games yet in this poule, come back later.</h4>
+    {% endif %}
+    {% if played_games %}
+        <h5>Played games</h5>
+        <div class="row">
+        <div class="col-8">
 
-    <div class="card text-center col-6">
-        <div class="card-body ">
-            <div class="row justify-content-center">
-                <div class=" col-4">
-                    <h6 class="text-muted mb-3"> Saturday 17 march, 18:00</h6>
-                </div>
-            </div>
-            <div class="row align-items-center justify-content-center">
-                <div class="col-5 align-items-center">
+            {% for game in played_games %}
+                <div class="card text-center ">
+                    <div class="card-body w-100">
+                        <div class="row justify-content-center">
+                            <div class=" col-4">
+                                <h6 class="text-muted mb-3"> {{ game.date|date:"l j F Y, H:i" }}</h6>
+                            </div>
+                        </div>
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-5 align-items-center">
 
-                    <img src="{% static '/assets/images/default.png' %}" class="rounded img-fluid"
-                         style="max-width: 100px">
-                    <h4 class="mt-2">Test team 1</h4>
+                                <img src="{{ game.team1.image.url }}" class="rounded img-fluid"
+                                     style="max-width: 100px">
+                                <h4 class="mt-2">{{ game.team1.name }}</h4>
 
-                </div>
-                <div class=" col-2 align-content-center shadow bg-white"
-                     style="height: 80px;border-style: solid;border-width:1px;border-radius:5px; border-color:grey; top:-10px;">
-                    <div class="row align-items-center h-100 justify-content-center">
+                            </div>
+                            <div class=" col-2 align-content-center shadow bg-white"
+                                 style="height: 80px;border-style: solid;border-width:1px;border-radius:5px; border-color:grey; top:-10px;">
+                                <div class="row align-items-center h-100 justify-content-center">
 
-                        <div class="col-10">
-                            <h1>2 - 2</h1>
+                                    <div class="col-10">
+                                        <h1>{{ game.result1 }} - {{ game.result2 }}</h1>
+                                    </div>
+
+                                </div>
+
+                                {#                       <div class="btn-group btn-group-lg group-border" role="group" aria-label="First group" style="border-style: solid;border-width:5px">#}
+                                {#    <button type="button" class="btn disabled btn-outline-secondary">1</button>#}
+                                {#    <button type="button" class="btn disabled btn-outline-secondary">2</button>#}
+                                {#                        </div>#}
+
+
+                            </div>
+                            <div class="col-5 align-items-center">
+
+                                <img src="{{ game.team2.image.url }}" class="rounded img-fluid"
+                                     style="max-width: 100px">
+                                <h4 class="mt-2">{{ game.team2.name }}</h4>
+
+                            </div>
                         </div>
 
                     </div>
 
-                    {#                       <div class="btn-group btn-group-lg group-border" role="group" aria-label="First group" style="border-style: solid;border-width:5px">#}
-                    {#    <button type="button" class="btn disabled btn-outline-secondary">1</button>#}
-                    {#    <button type="button" class="btn disabled btn-outline-secondary">2</button>#}
-                    {#                        </div>#}
+                    <div class="card-footer w-100">
 
-
-                </div>
-                <div class="col-5 align-items-center">
-
-                    <img src="{% static '/assets/images/default.png' %}" class="rounded img-fluid"
-                         style="max-width: 100px">
-                    <h4 class="mt-2">Test team 2</h4>
-
-                </div>
-            </div>
-
-        </div>
-        <div class="row justify-content-center">
-            <div class="card-footer w-100">
-
-                <a class="" data-toggle="collapse" data-parent="#accordian-4"
-                   href="#Toggle-2" aria-expanded="false" aria-controls="Toggle-2">
-                    <i class="mdi mdi-dots-horizontal font-30"></i>
-                </a>
-                <div id="Toggle-2" class="multi-collapse collapse" style="">
-                    <div class="card-body widget-content">
-                        <div class="row">
-                            <div class="col-6">
-                                test
+                        <a class="font-weight-bold text-muted" data-toggle="collapse" data-parent="#accordian-4"
+                           href="#Toggle-{{ game.id }}" aria-expanded="false" aria-controls="Toggle-{{ game.id }}">
+                            See your prediction <i class="fa fa-angle-down ml-2"></i>
+                        </a>
+                        <div id="Toggle-{{ game.id }}" class="multi-collapse collapse" style="">
+                            <div class="card-body widget-content">
+                                {% with prediction=prediction_dict|get_item:game %}
+                                    {% if prediction.points > 0 %}
+                                        <p>{{ prediction.prediction1 }} - {{ prediction.prediction2 }}</p>
+                                        <span class=" badge badge-pill badge-success" style="font-size: large;
+                            text-align: center;">{{ prediction.points }}</span>
+                                    {% elif prediction.points == 0 %}
+                                        <p>{{ prediction.prediction1 }} - {{ prediction.prediction2 }}</p>
+                                        <span class=" badge badge-pill badge-danger" style="font-size: large;
+                            text-align: center;">0</span>
+                                    {% else %}
+                                        <p>No prediction was made</p>
+                                        <span class=" badge badge-pill badge-danger" style="font-size: large;
+                            text-align: center;">0</span>
+                                    {% endif %}
+                                {% endwith %}
                             </div>
-                            <div class="col-6">
-                                test
+                        </div>
+
+                    </div>
+
+
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% if upcoming_games %}
+
+    <div class="col-4">
+        <div class="card">
+
+            <div class="card-body ">
+                <h5 class="card-title">Upcoming games</h5>
+                {% for game in upcoming_games %}
+                    <h6 class="text-muted mt-2">{{ game.date|date:"l j F Y, H:i" }}</h6>
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="row align-items-center">
+                                <div class="col-2 align-items-center">
+                                    <img src="{{ game.team1.image.url }}" class="rounded img-fluid"
+                                         style="max-width: 40px">
+                                </div>
+
+                                <p class="col-3 align-items-center">{{ game.team1.name }} </p>
+                                <p class="col-1">-</p>
+                                <p class="col-3 align-items-center">{{ game.team2.name }}</p>
+
+                                <div class="col-2">
+                                    <img src="{{ game.team2.image.url }}" class="rounded img-fluid"
+                                         style="max-width: 40px">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-3 align-content-center">
+                            <div class="row ">
+                                {% with prediction=prediction_dict|get_item:game %}
+                                    {% if prediction %}
+                                        <span class="badge badge-success"><i
+                                                class="mdi mdi-check"></i> Prediction: {{ prediction.prediction1 }} - {{ prediction.prediction2 }}</span>
+                                    {% else %}
+                                        <span class="badge badge-danger"><i class="mdi mdi-close"></i> No Prediction yet</span>
+                                    {% endif %}
+                                {% endwith %}
                             </div>
                         </div>
                     </div>
-                </div>
 
+
+                {% endfor %}
+                <a href="{% url 'poule-predictions' poule.id %}" class="btn btn-block btn-outline-primary mt-4">Go
+                    to
+                    Predictions</a>
             </div>
-
         </div>
-
     </div>
+    </div>
+
+{% endif %}
 
 {% endblock content %}
