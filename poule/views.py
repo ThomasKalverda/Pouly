@@ -12,7 +12,7 @@ import random
 from django.db.models.functions import TruncDay
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin, FormView
-from .forms import CreateTeamForm, CreateGameForm, CreatePredictionForm, CompetitionMakerForm, PouleUpdateForm
+from .forms import CreateTeamForm, CreateGameForm, CreatePredictionForm, CompetitionMakerForm, PouleUpdateForm, GameUpdateForm
 from collections import OrderedDict
 from django.template.defaulttags import register
 import datetime, math
@@ -23,6 +23,7 @@ from django.conf import settings
 import pathlib
 from django.contrib import messages
 from django.utils import timezone
+import pickle
 
 
 @register.filter
@@ -155,25 +156,52 @@ def generate_games_KO(form, poule):
 
 
 def generate_teams(number, poule):
-    import os
-    # directory = r'C:\Users\thoma\Repositories\PycharmProjects\Pouly\staticfiles\assets\images\randomteams'
-    # url = pathlib.PurePath(static('assets/images/randomteams'))
-    # all_teams = []
-    # for entry in os.scandir(directory):
-    #     if (entry.path.endswith(".jpg")
-    #         or entry.path.endswith(".png")) and entry.is_file():
-    #         team = Team(name=entry.name.split('.')[0], image=entry, poule=poule)
-    #         all_teams.append(team)
-    #
-    # for i in range(number):
-    #     index = random.randint(0, len(all_teams)-1)
-    #     print(all_teams[index])
-    #     random_team = all_teams[index]
-    #     random_team.save()
-    # for i in range(number):
-    #     index = random.randint(1, 64)
-    #     image = os.path.join(static('assets/images/randomteams/'),os.path.
-    pass
+    with open('random_teams.pickle', 'rb') as f:
+        # The protocol version used is detected automatically, so we do not
+        # have to specify it.
+        random_teams = pickle.load(f)
+
+        poule_team_names = [team.name for team in Team.objects.filter(poule=poule)]
+        length = len(random_teams)
+        # check how many teams from the pickle already exist in poule_team_names
+        max_number = 64
+        for random_team in random_teams:
+            if random_team.name in poule_team_names:
+                max_number -= 1
+
+        for i in range(min(number,max_number)):
+            index = random.randint(0, len(random_teams)-1)
+            team = random_teams[index]
+
+            while team.name in poule_team_names:
+                if index == 63:
+                    index = 0
+                else:
+                    index += 1
+                team = random_teams[index]
+            poule_team_names.append(team.name)
+            team.poule = poule
+            print(team)
+            team.save()
+
+
+def generate_predictions(poule, user):
+    user_predictions = user.predictions.all()
+    predicted_games = [prediction.game for prediction in user_predictions]
+    for game in Game.objects.filter(poule=poule):
+        if not game in predicted_games:
+            prediction1 = random.randint(0, 5)
+            prediction2 = random.randint(0, 5)
+            new_prediction = Prediction(user=user, game=game, prediction1=prediction1, prediction2=prediction2)
+            new_prediction.save()
+
+
+
+def clear_predictions(poule, user):
+    user_predictions = user.predictions.all()
+    for prediction in user_predictions:
+        if prediction.game.date > timezone.now() and prediction.game.poule == poule:
+            prediction.delete()
 
 
 class PouleOverviewView(UserPassesTestMixin, DetailView):
@@ -242,37 +270,41 @@ class PoulePredictionsView(FormMixin, DetailView):
                 point_dict['total'] += prediction.points
 
         context['point_dict'] = point_dict
+        context['now'] = timezone.now()
         return context
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return HttpResponseForbidden()
-        game = Game.objects.get(pk=request.POST.get('gameid'))
+        if request.POST.get('gameid'):
+            game = Game.objects.get(pk=request.POST.get('gameid'))
         form = self.get_form()
-
-        if form.is_valid():
-            old_prediction = Prediction.objects.filter(user=self.request.user, game=game)
-            if old_prediction:
-                old_prediction.delete()
-            form.instance.game = game
-            form.instance.user = self.request.user
-            form.save()
-            messages.success(request,
-                             f"Prediction {form.instance.game.team1} {form.cleaned_data.get('prediction1')} - {form.cleaned_data.get('prediction2')} {form.instance.game.team2} saved!")
-            return HttpResponseRedirect(self.get_success_url(**kwargs))
-        else:
-            return self.form_invalid(form)
+        if 'save' in request.POST:
+            if form.is_valid():
+                old_prediction = Prediction.objects.filter(user=self.request.user, game=game)
+                if old_prediction:
+                    old_prediction.delete()
+                form.instance.game = game
+                form.instance.user = self.request.user
+                form.save()
+                messages.success(request,
+                                 f"Prediction {form.instance.game.team1} {form.cleaned_data.get('prediction1')} - {form.cleaned_data.get('prediction2')} {form.instance.game.team2} saved!")
+                return HttpResponseRedirect(self.get_success_url(**kwargs))
+            else:
+                return self.form_invalid(form)
+        elif 'randomize' in request.POST:
+            generate_predictions(self.get_object(), request.user)
+            return self.form_valid(form)
+        elif 'clear' in request.POST:
+            clear_predictions(self.get_object(), request.user)
+            return self.form_valid(form)
 
     def get_success_url(self, **kwargs):
         if kwargs:
             return reverse_lazy('poule-predictions', kwargs={'pk': kwargs['pk']})
         else:
-            return reverse_lazy('poule-predictions', args=(self.object.id,))
+            return reverse_lazy('poule-predictions', args=(self.get_object().id,))
 
-
-class PouleRulesView(DetailView):
-    model = Poule
-    template_name = 'poule/rules.html'
 
 
 class PouleGamesView(FormMixin, DetailView):
@@ -340,10 +372,16 @@ class TeamDeleteView(DeleteView):
         return reverse('poule-teams', kwargs={'pk': self.object.poule.pk})
 
 
-class GameUpdateView(UpdateView):
+class GameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Game
     template_name = 'poule/games_update.html'
-    fields = ['team1', 'team2', 'date', 'result1', 'result2']
+    form_class = GameUpdateForm
+
+    def test_func(self):
+        poule = self.get_object().poule
+        if self.request.user == poule.admin:
+            return True
+        return False
 
     def form_valid(self, form):
         poule = form.instance.poule
@@ -362,6 +400,12 @@ class GameUpdateView(UpdateView):
         poule = self.object.poule
         context['poule'] = poule
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super(GameUpdateView, self).get_form_kwargs()
+        # Update the existing form kwargs dict with the poule.
+        kwargs.update({"poule": self.object.poule})
+        return kwargs
 
 
 class GameDeleteView(UserPassesTestMixin, DeleteView):

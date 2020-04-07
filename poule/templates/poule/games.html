@@ -29,7 +29,7 @@
                                     <td>{{ game.date|date:"Y-m-d, H:i" }}</td>
 {# #}
                                     <td><img src=" {{ game.team1.image.url }} " class="rounded img-table mr-2 shadow">{{ game.team1.name }}</td>
-                                    <td>{{ game.result1 }} - {{ game.result2 }}</td>
+                                    <td>{% if game.result1 > -1 and game.result2 > -1 %}{{ game.result1 }} - {{ game.result2 }} {% else %} No result yet {% endif %}</td>
 
                                     <td><img src=" {{ game.team2.image.url }} " class="rounded img-table mr-2 shadow" >{{ game.team2.name }}</td>
                                     <td>

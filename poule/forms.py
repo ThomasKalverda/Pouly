@@ -87,6 +87,17 @@ class CreateGameForm(forms.ModelForm):
         fields = ['team1', 'team2', 'date']
 
 
+class GameUpdateForm(forms.ModelForm):
+    def __init__(self, poule, *args, **kwargs):
+        super(GameUpdateForm, self).__init__(*args, **kwargs)  # populates the post
+        self.fields['team1'].queryset = Team.objects.filter(poule=poule)
+        self.fields['team2'].queryset = Team.objects.filter(poule=poule)
+
+    class Meta:
+        model = Game
+        fields = ['team1', 'team2', 'date', 'result1', 'result2']
+
+
 class CreatePredictionForm(forms.ModelForm):
     prediction1 = forms.ChoiceField(choices=PREDICTION_CHOICES, widget=forms.Select(
         attrs={'class': 'select form-control custom-select font-weight-bold font-20',
