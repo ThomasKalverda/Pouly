@@ -126,6 +126,7 @@ def generate_games_CO(form, poule, request):
         if len(date_list) == number_of_game_days:
             break
 
+    number_of_matches = len(matches)
     game_times = list(map(int, form['game_times']))
     game_times_deq = deque(game_times)
 
@@ -138,10 +139,11 @@ def generate_games_CO(form, poule, request):
                 gamedate = date + datetime.timedelta(hours=game_times_deq[0])
                 game = Game(team1=team1, team2=team2, date=gamedate, poule=poule)
                 game.save()
-                messages.success(request,
-                                 f"Game {game.team1} vs {game.team2} on {game.date.strftime('%A %B %d')} at {game.date.strftime('%H:%M')}  added!")
+                # messages.success(request,
+                #                  f"Game {game.team1} vs {game.team2} on {game.date.strftime('%A %B %d')} at {game.date.strftime('%H:%M')}  added!")
                 print(f'Game created: {game}')
             game_times_deq.rotate(-1)
+    messages.success(request, f"{number_of_matches} games added!")
 
 
 def generate_games_KO(form, poule):

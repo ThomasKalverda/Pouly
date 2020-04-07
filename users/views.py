@@ -26,7 +26,7 @@ def profile(request):
                                    instance=request.user.profile)
         if u_form.is_valid() and p_form.is_valid():
             username = u_form.cleaned_data['username']
-            messages.success(request, f'Account created for {username}!')
+            messages.success(request, f'Profile Updated!')
             u_form.save()
             p_form.save()
             return redirect('profile')

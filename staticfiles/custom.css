@@ -32,13 +32,12 @@
     margin-right: 5px;
 }
 
-/*.poule-card {*/
-/*    height: 500px;*/
-/*}*/
+.poule-card {
+    height: 1000px;
+}
 
 .poule-group > .row {
     overflow-x: auto;
-    padding-top: 50px;
 
     /*white-space: nowrap;*/
 }

@@ -1,58 +1,72 @@
 {% extends "lobby/base.html" %}
 {% block content %}
     {% load static %}
-    <h2 class="page-title">My Poules</h2>
+    <div class="container">
+        <div class="col-9">
+            <div class="card ">
+                <div class="card-body ">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="card-title justify-content-center">Welcome to Pouly!</h3>
+                            <p class="card-text">Find a poule to join or create one yourself!</p>
+                        </div>
+                        <div class="col-4 right">
+                            <a href="{% url 'poule-create' %}" class="mt-auto btn btn-lg btn-outline-success"><i
+                                    class="mdi mdi-plus"></i> Create New Poule</a>
+                        </div>
+                    </div>
 
-    <br>
-    <div class="card-group mt-2">
-        <div class=" row flex-row flex-nowrap">
+                </div>
+            </div>
+        {% if user_poules %}
+        <h4>My Poules</h4>
+
+        {% endif %}
             {% for poule in user_poules %}
-                {#                {% include 'books/book_element.html' %}#}
-                <div class="col">
-                    <div class="card h-100 card-block card-hover">
-                        <img class="card-img-top" src="{{ poule.image.url }}"
-                             alt="Card image cap">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ poule.name }}</h5>
-                            <p class="card-text">{{ poule.description }}</p>
-                            <a href="{% url 'poule-overview' poule.id %}" class="mt-auto btn btn-primary">Go to Poule</a>
-                        </div>
+            {% if poule in user_poules %}
+            <div class="card-group card-hover">
+                <div class="card col-2 p-0">
+                    <div class="card-header" style="padding:0">
+                        <img class="card-img-top img-fluid" src="{{ poule.image.url }}" style="width:136px" alt="">
                     </div>
                 </div>
+                <div class="card flex-row flex-wrap">
 
-                {#            {% if forloop.counter|divisibleby:"5" %}#}
-                {#  Close the current deck and start a new one #}
-                {#                </div>#}
-                {#                <div class="row col-md-10 row-cols-5">#}
-                {#            {% endif %}#}
-            {% endfor %}
-        </div><!-- The final deck is closed here, outside the loop -->
-    </div>
-    <hr>
-    <h2 class="page-title">Active Poules</h2>
-    <div class="card-group">
-        <div class=" row flex-row flex-nowrap">
-            {% for poule in poules %}
-                {#                {% include 'books/book_element.html' %}#}
-                <div class="col">
-                    <div class="card h-100 card-block card-hover">
-                        <img class="card-img-top" src="{{ poule.image.url }}"
-                             alt="Card image cap">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ poule.name }}</h5>
-                            <p class="card-text">{{ poule.description }}</p>
-                            <a href="{% url 'poule-overview' poule.id %}" class="mt-auto btn btn-primary">Join Poule</a>
-                        </div>
+
+                    <div class="mt-3 ml-3">
+                        <h4 class="card-title">{{ poule.name }} <i class=" far fa-futbol"></i></h4>
+                        <p class="">{{ poule.description }}</p>
                     </div>
                 </div>
-
-                {#            {% if forloop.counter|divisibleby:"5" %}#}
-                {#  Close the current deck and start a new one #}
-                {#                </div>#}
-                {#                <div class="row col-md-10 row-cols-5">#}
-                {#            {% endif %}#}
+                <div class="card col-3 align-items-center justify-content-center">
+                    <a href="{% url 'poule-overview' poule.id %}" class="btn btn-lg btn-block btn-outline-primary">Go to Poule <i class="mdi mdi-arrow-right"></i></a>
+                </div>
+            </div>
+            {% endif %}
             {% endfor %}
-        </div><!-- The final deck is closed here, outside the loop -->
-    </div>
+        <h4>Active Poules</h4>
+        {% for poule in poules %}
+            {% if poule not in user_poules %}
+        <div class="card-group card-hover">
+                <div class="card col-3 p-0">
+                    <div class="card-header" style="padding:0">
+                        <img class="card-img-top img-fluid" src="{{ poule.image.url }}"  alt="">
+                    </div>
+                </div>
+                <div class="card flex-row flex-wrap">
+
+
+                    <div class="mt-3 ml-3">
+                        <h4 class="card-title">{{ poule.name }} <i class=" far fa-futbol"></i></h4>
+                        <p class="">{{ poule.description }}</p>
+                    </div>
+                </div>
+                <div class="card col-3 align-items-center justify-content-center">
+                    <a href="{% url 'poule-overview' poule.id %}" class="btn btn-lg btn-block btn-outline-cyan"> Join Poule <i class="mdi mdi-account-plus"></i></a>
+                </div>
+            </div>
+        {% endif %}
+        {% endfor %}
+
 
 {% endblock content %}

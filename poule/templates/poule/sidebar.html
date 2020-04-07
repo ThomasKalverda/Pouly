@@ -22,11 +22,11 @@
                             class="sidebar-link waves-effect waves-dark sidebar-link"
                             href="{% url 'poule-overview' poule.id %}" aria-expanded="false"><i
                             class="mdi mdi-view-dashboard"></i><span class="hide-menu">Overview</span></a></li>
-                    <li class="sidebar-item {% if sbar == 'ranking' %}selected{% endif %}"><a
+                    <li class="sidebar-item "><a
                             class="sidebar-link waves-effect waves-dark sidebar-link"
                             href="{% url 'poule-ranking' poule.id %}" aria-expanded="false"><i
                             class="mdi mdi-poll"></i><span class="hide-menu">Ranking</span></a></li>
-                    <li class="sidebar-item {% if sbar == 'predictions' %}selected{% endif %}"><a
+                    <li class="sidebar-item "><a
                             class="sidebar-link waves-effect waves-dark sidebar-link"
                             href="{% url 'poule-predictions' poule.id %}" aria-expanded="false"><i
                             class="mdi mdi-chart-bubble"></i><span class="hide-menu">Predictions</span></a></li>
@@ -37,20 +37,20 @@
                                                                     href="#"><i
                                 class="fas fa-cog"></i>
                         </a></h4>
-                        <li class="sidebar-item {% if sbar == 'games' %}selected{% endif %}"><a
+                        <li class="sidebar-item"><a
                                 class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="{% url 'poule-games' poule.id %}" aria-expanded="false"><i
                                 class="mdi mdi-flag-checkered"></i><span class="hide-menu">Games</span></a></li>
-                        <li class="sidebar-item {% if sbar == 'teams' %}selected{% endif %}"><a
+                        <li class="sidebar-item "><a
                                 class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="{% url 'poule-teams' poule.id %}" aria-expanded="false"><i
                                 class="mdi mdi-account-multiple"></i><span class="hide-menu">Teams</span></a></li>
-                        <li class="sidebar-item {% if sbar == 'info' %}selected{% endif %}"><a
+                        <li class="sidebar-item "><a
                                 class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="{% url 'poule-competition' poule.id %}" aria-expanded="false"><i
                                 class="mdi mdi-calendar-range"></i><span class="hide-menu">Competition Maker</span></a>
                         </li>
-                        <li class="sidebar-item {% if sbar == 'info' %}selected{% endif %}"><a
+                        <li class="sidebar-item "><a
                                 class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="{% url 'poule-info' poule.id %}" aria-expanded="false"><i
                                 class="mdi mdi-information-outline"></i><span class="hide-menu">Poule Info</span></a>
