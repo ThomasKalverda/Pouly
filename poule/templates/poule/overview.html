@@ -23,9 +23,7 @@
                 </div>
 
             </div>
-            {% if not played_games and not upcoming_games %}
-                <h4>No games yet in this poule, come back later.</h4>
-            {% endif %}
+
             {% if played_games %}
             {% for game in played_games %}
                 <div class="card text-center ">
@@ -102,8 +100,7 @@
 
                 </div>
             {% endfor %}
-                {% else %}
-                <h4>No games have been played yet in this poule.</h4>
+
             {% endif %}
         </div>
 
@@ -143,8 +140,8 @@
                                         <span class="badge badge-success"><i
                                                 class="mdi mdi-check"></i> Prediction: {{ prediction.prediction1 }} - {{ prediction.prediction2 }}</span>
                                     {% else %}
-                                        <span class="badge badge-danger"><i
-                                                class="mdi mdi-alert-circle-outline font-14"></i> No Prediction yet</span>
+                                        <a href="{% url 'poule-predictions' poule.id %}"> <span class="badge badge-danger"><i
+                                                class="mdi mdi-alert-circle-outline font-14"></i> No Prediction yet</span></a>
                                     {% endif %}
                                 {% endwith %}
                             </div>

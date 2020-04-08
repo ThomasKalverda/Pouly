@@ -12,7 +12,8 @@ import random
 from django.db.models.functions import TruncDay
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import FormMixin, FormView
-from .forms import CreateTeamForm, CreateGameForm, CreatePredictionForm, CompetitionMakerForm, PouleUpdateForm, GameUpdateForm
+from .forms import CreateTeamForm, CreateGameForm, CreatePredictionForm, CompetitionMakerForm, PouleUpdateForm, \
+    GameUpdateForm
 from collections import OrderedDict
 from django.template.defaulttags import register
 import datetime, math
@@ -46,7 +47,6 @@ def get_game_prediction_points(dictionary, key):
     return dictionary.get(key).points
 
 
-
 def calculate_scores(poule):
     poule_games = Game.objects.all().filter(poule=poule)
     poule_predictions = []
@@ -67,31 +67,32 @@ def calculate_scores(poule):
 
 def calculate_prediction_points(poule, game):
     game_predictions = Prediction.objects.all().filter(game=game)
-    if game.result1 > -1 and game.result2 > -1:
-        for prediction in game_predictions:
-            diff1 = game.result1 - prediction.prediction1
-            diff2 = game.result2 - prediction.prediction2
-            # determine winner
-            res_winner = 'team1'
-            pred_winner = 'team1'
-            if game.result2 > game.result1:
-                res_winner = 'team2'
-            elif game.result2 == game.result1:
-                res_winner = 'tie'
-            if prediction.prediction2 > prediction.prediction1:
-                pred_winner = 'team2'
-            elif prediction.prediction2 == prediction.prediction1:
-                pred_winner = 'tie'
-            # determine number of points
-            if diff1 == 0 and diff2 == 0:
-                prediction.points = 10
-            elif diff1 == diff2:
-                prediction.points = 6
-            elif res_winner == pred_winner:
-                prediction.points = 4
-            else:
-                prediction.points = 0
-            prediction.save()
+    if game.result1 is not None and game.result2 is not None:
+        if game.result1 > -1 and game.result2 > -1:
+            for prediction in game_predictions:
+                diff1 = game.result1 - prediction.prediction1
+                diff2 = game.result2 - prediction.prediction2
+                # determine winner
+                res_winner = 'team1'
+                pred_winner = 'team1'
+                if game.result2 > game.result1:
+                    res_winner = 'team2'
+                elif game.result2 == game.result1:
+                    res_winner = 'tie'
+                if prediction.prediction2 > prediction.prediction1:
+                    pred_winner = 'team2'
+                elif prediction.prediction2 == prediction.prediction1:
+                    pred_winner = 'tie'
+                # determine number of points
+                if diff1 == 0 and diff2 == 0:
+                    prediction.points = 10
+                elif diff1 == diff2:
+                    prediction.points = 6
+                elif res_winner == pred_winner:
+                    prediction.points = 4
+                else:
+                    prediction.points = 0
+                prediction.save()
 
 
 def generate_games_CO(form, poule, request):
@@ -146,17 +147,6 @@ def generate_games_CO(form, poule, request):
     messages.success(request, f"{number_of_matches} games added!")
 
 
-def generate_games_KO(form, poule):
-    matches = []
-    team_list = form['teams']
-    for team in team_list:
-        for i in range(len(team_list)):
-            if not team == team_list[i]:
-                matches.append((team, team_list[i]))
-
-    print(matches)
-
-
 def generate_teams(number, poule):
     with open('random_teams.pickle', 'rb') as f:
         # The protocol version used is detected automatically, so we do not
@@ -171,8 +161,8 @@ def generate_teams(number, poule):
             if random_team.name in poule_team_names:
                 max_number -= 1
 
-        for i in range(min(number,max_number)):
-            index = random.randint(0, len(random_teams)-1)
+        for i in range(min(number, max_number)):
+            index = random.randint(0, len(random_teams) - 1)
             team = random_teams[index]
 
             while team.name in poule_team_names:
@@ -189,20 +179,19 @@ def generate_teams(number, poule):
 
 def generate_predictions(poule, user):
     user_predictions = user.predictions.all()
-    predicted_games = [prediction.game for prediction in user_predictions]
+    predicted_games = [prediction.game for prediction in user_predictions if prediction.game.date > timezone.now()]
     for game in Game.objects.filter(poule=poule):
-        if not game in predicted_games:
+        if not game in predicted_games and not game.result1 and not game.result2 and game.date > timezone.now():
             prediction1 = random.randint(0, 5)
             prediction2 = random.randint(0, 5)
             new_prediction = Prediction(user=user, game=game, prediction1=prediction1, prediction2=prediction2)
             new_prediction.save()
 
 
-
 def clear_predictions(poule, user):
     user_predictions = user.predictions.all()
     for prediction in user_predictions:
-        if prediction.game.date > timezone.now() and prediction.game.poule == poule:
+        if prediction.game.date > timezone.now() and prediction.game.poule == poule and not prediction.game.result1 and not prediction.game.result2:
             prediction.delete()
 
 
@@ -212,9 +201,10 @@ class PouleOverviewView(UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        upcoming_games = Game.objects.filter(poule=self.get_object(), date__gte=timezone.now()).order_by('date')[:3]
-        played_games = Game.objects.filter(result1__gte=0, result2__gte=0, poule=self.get_object(),
-                                           date__lte=timezone.now()).order_by('-date')
+        upcoming_games = Game.objects.filter(result1=None, result2=None).filter(poule=self.get_object(),
+                                                                                date__gte=timezone.now()).order_by(
+            'date')[:3]
+        played_games = Game.objects.filter(result1__gte=0, result2__gte=0, poule=self.get_object()).order_by('-date')
         user_predictions = self.request.user.predictions.all()
         context['prediction_dict'] = {prediction.game: prediction for prediction in user_predictions}
         context['upcoming_games'] = upcoming_games
@@ -306,7 +296,6 @@ class PoulePredictionsView(FormMixin, DetailView):
             return reverse_lazy('poule-predictions', kwargs={'pk': kwargs['pk']})
         else:
             return reverse_lazy('poule-predictions', args=(self.get_object().id,))
-
 
 
 class PouleGamesView(FormMixin, DetailView):
