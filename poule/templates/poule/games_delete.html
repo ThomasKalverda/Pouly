@@ -1,34 +1,31 @@
 {% extends "poule/sidebar.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="row page-breadcrumb ">
-        <div class="col-3 d-flex  align-items-center">
-            <h4 class="page-title mb-2 ">Delete Game</h4>
-            <hr>
-        </div>
-    </div>
     <div class="row">
         <div class="col-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Delete Game</h5>
                     <form class="form-horizontal m-t-20" method="POST" enctype='multipart/form-data'>
                         {% csrf_token %}
                         <div class="row p-b-30">
                             <div class="col-12">
+                                <fieldset class="border-bottom mb-4">
+                            <legend>Delete Game</legend>
+                        </fieldset>
                                 <fieldset class="form-group">
                                     <h2>Are you sure you want to delete {{ object }}</h2>
                                 </fieldset>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row border-top border-secondary">
                             <div class="col-12">
-                                <div class="form-group">
-                                    <div class="p-t-20">
-                                        <button class="btn btn-lg btn-outline-danger" type="submit">Delete
-                                        </button>
-                                        <a href="#" class="btn btn-lg btn-outline-secondary">Cancel
-                                        </a>
+                                <div class="form-group row">
+                                    <div class="p-t-20 col-6">
+                                        <a href="{% url 'poule-teams' poule.id %}"
+                                           class="btn btn-block btn-lg btn-outline-secondary" type="submit">Back</a>
+                                    </div>
+                                    <div class="p-t-20 col-6">
+                                        <button class="btn btn-block btn-lg btn-outline-danger" type="submit">Delete</button>
                                     </div>
                                 </div>
                             </div>

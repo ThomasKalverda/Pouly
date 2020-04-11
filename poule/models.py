@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.urls import reverse
 
 
+# Model for Team objects.
 class Team(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(default='team_pics/default.jpg', upload_to='team_pics')
@@ -17,6 +18,7 @@ class Team(models.Model):
         return reverse('poule-teams', kwargs={'pk': self.poule.id})
 
 
+# Model for Game objects.
 class Game(models.Model):
     poule = models.ForeignKey(Poule, on_delete=models.CASCADE, related_name='games')
     team1 = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, related_name='games1')
@@ -32,6 +34,7 @@ class Game(models.Model):
         return reverse('poule-games', kwargs={'pk': self.poule.id})
 
 
+# Model for Prediction objects
 class Prediction(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='predictions')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='predictions')
@@ -43,6 +46,7 @@ class Prediction(models.Model):
         return f'{self.user} - {self.game}: {self.prediction1} vs {self.prediction2}'
 
 
+# Model for Score objects, starts at 0.
 class Score(models.Model):
     points = models.SmallIntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='points')

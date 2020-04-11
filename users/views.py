@@ -4,6 +4,7 @@ from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 
 
+# FBV for register, if method is POST; validate the form and save, if not POST; show an empty form
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -17,6 +18,7 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 
+# FBV for updating Profile and User, if method is POST, save the forms, if not POST, populate the forms with instance
 @login_required
 def profile(request):
     if request.method == 'POST':

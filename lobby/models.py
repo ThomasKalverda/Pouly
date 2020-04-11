@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from PIL import Image
 
+
+# Model for a sport
 class Sport(models.Model):
     name = models.CharField(max_length=100, default='Voetbal')
     image = models.ImageField(default='sport_pics/default.jpg', upload_to='sport_pics')
@@ -11,6 +13,7 @@ class Sport(models.Model):
         return self.name
 
 
+# Model for a poule
 class Poule(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=145, blank=True)
@@ -23,9 +26,11 @@ class Poule(models.Model):
     def __str__(self):
         return self.name
 
+    # Set standard URL for Poule model.
     def get_absolute_url(self):
         return reverse('poule-overview', kwargs={'pk': self.id})
 
+    # Override to make image square and smaller
     def save(self, *args, **kwargs):
         super().save()
 
