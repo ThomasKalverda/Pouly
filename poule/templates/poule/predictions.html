@@ -1,0 +1,382 @@
+{% extends "poule/sidebar.html" %}
+{% block content %}
+
+
+
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Predictions</h5>
+                    <p>This is the place where you predict the outcomes for the games in the poule. For each game,
+                        select
+                        the
+                        number of goals you think each team will make.<br> You get:</p>
+                    <ul>
+                        <li><span class=" badge badge-pill badge-success" style="font-weight: bold;
+                            text-align: center;">10</span> points, if your prediction is exactly correct
+                        </li>
+                        <li><span class=" badge badge-pill badge-success" style="font-weight: bold;
+                            text-align: center;">6</span> points, if you have predicted the correct goal difference
+                        </li>
+                        <li><span class=" badge badge-pill badge-success" style="font-weight: bold;
+                            text-align: center;">4</span> points, if you only predict the correct winner.
+                        </li>
+                    </ul>
+
+                    <div class="row">
+                        <p class="col-9">The points are calculated after the game has been played and the poule manager has entered the
+                        result.</p>
+                        <form class="form col-3" method="POST" enctype='multipart/form-data'>
+                            {% csrf_token %}
+
+
+
+                                <button class="btn  btn-outline-info align-content-center" name="randomize"
+                                        type="submit" data-toggle="tooltip" data-placement="top"
+                                        title="Quickly fill in all open predictions randomly. The predictions can be edited afterwards.">
+                                    <i class="mdi mdi-auto-fix"></i> Randomize
+                                </button>
+                                <button class="btn  btn-outline-danger ml-2 align-content-center" name="clear"
+                                        type="submit" data-toggle="tooltip" data-placement="top"
+                                        title="Clear all predictions for games that are in the future."><i
+                                        class="mdi mdi-delete"></i> Clear all
+                                </button>
+
+
+                   </form>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+            {% if grouped_and_sorted_games %}
+                {% for date,game_list in grouped_and_sorted_games %}
+                    <h4>{{ date|date:"l j F Y" }}</h4>
+                    {% for game in game_list %}
+                        {% with prediction=prediction_dict|get_item:game %}
+                            {% if game.result1 > -1 and game.result2 > -1 %}
+                                <div class="card-group card-hover">
+                                    <div class="card col-2">
+                                        <div class="card-body row h-100 align-items-center justify-content-center">
+                                            <span class=""><h2
+                                                    class="text-muted ">{{ game.date|date:"H:i" }}</h2></span>
+                                        </div>
+                                    </div>
+                                    <div class="card text-center">
+                                        <div class="card-body row h-100 align-items-center">
+                                            <div class="col-1">
+                                                <img src=" {{ game.team1.image.url }} " class="rounded img-fluid"
+                                                     style="max-width: 60px">
+                                            </div>
+                                            <div class="col-3">
+                                                <h4 class="font-weight-light">{{ game.team1.name }}</h4>
+                                            </div>
+                                            <div class=" col-3">
+                                                <div class="row justify-content-center">
+                                                    {{ form.game.value }}
+                                                    <select disabled
+                                                            class="select form-control custom-select font-weight-bold font-20"
+                                                            style="width: 60px; height:50px;">
+                                                        <option>{{ prediction.prediction1 }}</option>
+                                                    </select>
+                                                    <select disabled
+                                                            class="select form-control custom-select font-weight-bold font-20"
+                                                            style="width: 60px; height:50px;">
+                                                        <option>{{ prediction.prediction2 }}</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-3">
+                                                <h4 class="font-weight-light">{{ game.team2.name }}</h4>
+                                            </div>
+                                            <div class="col-1">
+                                                <img src=" {{ game.team2.image.url }} " class="rounded img-fluid"
+                                                     style="max-width: 60px">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card col-2 p-1 bg-light">
+                                        <div class="card-body row h-100 align-items-center justify-content-center">
+                                            <div class="row align-items-center">
+                                                <div class="col-8">
+                                                    <div class="button-group">
+                                                        <div class="row">
+                                                            <button type="button"
+                                                                    class="btn btn-lg btn-outline-secondary disabled border">{{ game.result1 }}
+                                                            </button>
+
+                                                            <button type="button"
+                                                                    class="btn btn-lg btn-outline-secondary disabled border">{{ game.result2 }}
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-3 ">
+                                                    {% if prediction.points %}
+                                                        <span class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
+                            text-align: center;">
+
+                        {{ prediction.points }}
+                        </span>
+                                                    {% else %}
+                                                        <span class=" badge badge-pill badge-danger" style="font-weight: bold; font-size: large;
+                            text-align: center;">0</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif game.date < now %}
+                                <div class="card-group card-hover">
+                                    <div class="card col-2">
+                                        <div class="card-body row h-100 align-items-center justify-content-center">
+                                            <span class=""><h2
+                                                    class="text-muted ">{{ game.date|date:"H:i" }}</h2></span>
+                                        </div>
+                                    </div>
+                                    <div class="card text-center">
+                                        <div class="card-body row h-100 align-items-center">
+                                            <div class="col-1">
+                                                <img src=" {{ game.team1.image.url }} " class="rounded img-fluid"
+                                                     style="max-width: 60px">
+                                            </div>
+                                            <div class="col-3">
+                                                <h4 class="font-weight-light">{{ game.team1.name }}</h4>
+                                            </div>
+                                            <div class=" col-3">
+                                                <div class="row justify-content-center">
+                                                    {{ form.game.value }}
+                                                    <select disabled
+                                                            class="select form-control custom-select font-weight-bold font-20"
+                                                            style="width: 60px; height:50px;">
+                                                        <option>{{ prediction.prediction1 }}</option>
+                                                    </select>
+                                                    <select disabled
+                                                            class="select form-control custom-select font-weight-bold font-20"
+                                                            style="width: 60px; height:50px;">
+                                                        <option>{{ prediction.prediction2 }}</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-3">
+                                                <h4 class="font-weight-light">{{ game.team2.name }}</h4>
+                                            </div>
+                                            <div class="col-1">
+                                                <img src=" {{ game.team2.image.url }} " class="rounded img-fluid"
+                                                     style="max-width: 60px">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card col-2 p-1 bg-light">
+                                        <div class="card-body row h-100 align-items-center justify-content-center">
+                                            <div class="row align-items-center">
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <form class="" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ game.id }}" name="gameid"/>
+                                    <div class="card-group card-hover">
+                                        <div class="card col-2">
+                                            <div class="card-body row h-100 align-items-center justify-content-center">
+                                            <span class=""><h2
+                                                    class="text-muted ">{{ game.date|date:"H:i" }}</h2></span>
+                                            </div>
+                                        </div>
+                                        <div class="card col-8 text-center">
+                                            <div class="card-body row h-100 align-items-center">
+                                                <div class="col-1">
+                                                    <img src=" {{ game.team1.image.url }} " class="rounded img-fluid"
+                                                         style="max-width: 60px">
+                                                </div>
+                                                <div class="col-3">
+                                                    <h4 class="font-weight-light">{{ game.team1.name }}</h4>
+                                                </div>
+                                                <div class=" col-3">
+                                                    <div class="row justify-content-center">
+                                                        {% if prediction.prediction1 > -1 %}
+                                                            <select
+                                                                    class="select form-control custom-select font-weight-bold font-20"
+                                                                    style="width: 60px; height:50px;"
+                                                                    name="{{ form.prediction1.name }}">
+                                                                <option>{{ prediction.prediction1 }}</option>
+                                                                <optgroup label=""></optgroup>
+                                                                <option value="0">0</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5+</option>
+                                                            </select>
+                                                        {% else %}
+                                                            {{ form.prediction1 }}
+                                                        {% endif %}
+                                                        {% if prediction.prediction2 > -1 %}
+                                                            <select
+                                                                    class="select form-control custom-select font-weight-bold font-20"
+                                                                    style="width: 60px; height:50px;"
+                                                                    name="{{ form.prediction2.name }}">
+                                                                <option>{{ prediction.prediction2 }}</option>
+                                                                <option value="0">0</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5+</option>
+                                                            </select>
+                                                        {% else %}
+                                                            {{ form.prediction2 }}
+                                                        {% endif %}
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-3">
+                                                    <h4 class="font-weight-light">{{ game.team2.name }}</h4>
+                                                </div>
+                                                <div class="col-1">
+                                                    <img src=" {{ game.team2.image.url }} " class="rounded img-fluid"
+                                                         style="max-width: 60px">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card col-2 p-1">
+                                            <div class="card-body row h-100 align-items-center justify-content-center">
+                                                <div class="row align-items-center">
+                                                    <div class="col-8">
+
+                                                        <div class="form-group">
+                                                            <div class="pt-2">
+                                                                <button class="btn btn-lg btn-outline-success"
+                                                                        type="submit" name="save">
+                                                                    Save
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        {% endwith %}
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                <h4>No games yet in this poule, come back later.</h4>
+            {% endif %}
+        </div>
+        <div class="col-4">
+            <div class="card">
+
+
+                <div class="card-body ">
+                    <h5 class="card-title">Total Points</h5>
+                    {% for point, total in point_dict.items %}
+                        {% if point == 10 %}
+                            <div class="row">
+                                <div class="col-9">
+                                    Points from correctly predicted games (<span
+                                        class=" badge badge-pill badge-success" style="font-weight: bold;
+                            text-align: center;"> {{ point }}</span>) :
+
+
+                                </div>
+                                <div class="col-3">                                   <span
+                                        class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
+                            text-align: center;">
+
+                        {{ total }}
+                        </span>
+                                </div>
+                            </div>
+                        {% elif point == 6 %}
+                            <div class="row mt-2">
+                                <div class="col-9">
+                                    Points from correctly predicted goal difference (<span
+                                        class=" badge badge-pill badge-success" style="font-weight: bold;
+                            text-align: center;">
+
+                        {{ point }}
+                        </span>) :
+                                </div>
+                                <div class="col-3">
+                                   <span class=" badge badge-pill badge-success" style="font-weight: bold;font-size: large;
+                            text-align: center;">
+
+                       {{ total }}
+                        </span>
+                                </div>
+                            </div>
+                        {% elif point == 4 %}
+                            <div class="row mt-2 ">
+                                <div class="col-9">
+                                    Points from correctly predicted winner (<span
+                                        class=" badge badge-pill badge-success" style="font-weight: bold;
+                            text-align: center;">
+
+                        {{ point }}
+                        </span>) :
+                                </div>
+                                <div class="col-3">                                        <span
+                                        class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
+                            text-align: center;">
+
+                       {{ total }}
+                        </span>
+                                    <hr>
+                                </div>
+                            </div>
+                        {% elif point == 'total' %}
+                            <div class="row mt-2 ">
+                            <div class="col-9">
+                                <h5>Total</h5>
+                            </div>
+                            <div class="col-3">
+                                    <span class=" badge badge-pill badge-success" style="font-weight: bold; font-size: large;
+                            text-align: center;">
+
+                                        {{ total }}</span>
+                            </div>
+                        {% endif %}
+
+
+
+
+
+                    {% endfor %}
+
+                    <a href="{% url 'poule-ranking' poule.id %}" class="btn btn-block btn-outline-primary mt-4">Go
+                        to
+                        Ranking</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock content %}

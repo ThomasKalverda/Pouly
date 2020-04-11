@@ -1,0 +1,80 @@
+{% extends "lobby/base.html" %}
+{% load static %}
+{% block sidebar %}
+
+    <!-- ============================================================== -->
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <!-- ============================================================== -->
+    <aside class="left-sidebar fixed-top" data-sidebarbg="skin5">
+        <!-- Sidebar scroll-->
+        <div class="sidebar-sticky">
+            <!-- Sidebar navigation-->
+            <nav class="sidebar-nav">
+                <ul id="sidebarnav" class="p-t-30">
+                    <li class="sidebar-item">
+                        <img class=img-responsive" width="100%" src="{{ poule.image.url }}"
+                             alt="Card image cap">
+                    </li>
+                    <li class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted border-bottom">
+                        <h4>{{ poule.name }}</h4>
+                    </li>
+                    <li class="sidebar-item "><a
+                            class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'poule-overview' poule.id %}" aria-expanded="false"><i
+                            class="mdi mdi-view-dashboard"></i><span class="hide-menu">Overview</span></a></li>
+                    <li class="sidebar-item "><a
+                            class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'poule-ranking' poule.id %}" aria-expanded="false"><i
+                            class="mdi mdi-poll"></i><span class="hide-menu">Ranking</span></a></li>
+                    <li class="sidebar-item "><a
+                            class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="{% url 'poule-predictions' poule.id %}" aria-expanded="false"><i
+                            class="mdi mdi-chart-bubble"></i><span class="hide-menu">Predictions</span></a></li>
+
+                    {% if user == poule.admin %}
+                        <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                            <span class="hide-menu">Admin</span><a class="d-flex align-items-center text-muted"
+                                                                    href="#"><i
+                                class="fas fa-cog"></i>
+                        </a></h4>
+                        <li class="sidebar-item"><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-games' poule.id %}" aria-expanded="false"><i
+                                class="mdi mdi-flag-checkered"></i><span class="hide-menu">Games</span></a></li>
+                        <li class="sidebar-item "><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-teams' poule.id %}" aria-expanded="false"><i
+                                class="mdi mdi-account-multiple"></i><span class="hide-menu">Teams</span></a></li>
+                        <li class="sidebar-item "><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-competition' poule.id %}" aria-expanded="false"><i
+                                class="mdi mdi-calendar-range"></i><span class="hide-menu">Competition Maker</span></a>
+                        </li>
+                        <li class="sidebar-item "><a
+                                class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'poule-info' poule.id %}" aria-expanded="false"><i
+                                class="mdi mdi-information-outline"></i><span class="hide-menu">Poule Info</span></a>
+                        </li>
+                    {% endif %}
+                    <li class="text-center">
+                        <a href="{% url 'lobby-home' %}">
+                            <button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75"><i
+                                    class="mdi mdi-keyboard-backspace"></i> Back to Lobby
+                            </button>
+                        </a>
+                        {#                        <button type="button" class="btn btn-primary btn-lg align-bottom m-2 w-75" href="'lobby-home'"><i class="mdi mdi-keyboard-backspace"></i> Back to Lobby</button>#}
+                    </li>
+
+
+                </ul>
+
+            </nav>
+            <!-- End Sidebar navigation -->
+        </div>
+        <!-- End Sidebar scroll-->
+    </aside>
+    <!-- ============================================================== -->
+    <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+{% endblock sidebar %}

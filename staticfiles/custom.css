@@ -1,28 +1,109 @@
-.page-wrapper-lobby {
-    padding: 100px;
-    padding-left: 200px;
-    background: #eef5f9;
-    position: relative;
-}
+/*.page-wrapper-lobby {*/
+/*    padding: 100px;*/
+/*    padding-left: 200px;*/
+/*    background: #eef5f9;*/
+/*    position: relative;*/
+/*}*/
 
 #main-wrapper[data-layout="vertical"][data-sidebartype="full"] .page-wrapper-lobby {
     margin-left: 20px;
 }
 
-.card.card-block {
+.page-wrapper-lobby {
+    background-color: #eef5f9;
+    border-color: #eef5f9;
+}
+
+.page-wrapper-lobby > .container-fluid {
+    padding: 20px;
+    padding-left: 270px;
+
+  min-height: calc(100vh - 180px); }
+
+/*.main-wrapper {*/
+/*    padding-left: 100px;*/
+/*    background-color: #eef5f9 ;*/
+/*}*/
+
+.card-block {
     width: 18rem;
-    min-height: 300px;
+    min-height: 200px;
     /*    min-width: 300px;*/
     margin-right: 5px;
 }
 
+.poule-card {
+    height: 1000px;
+}
+
 .poule-group > .row {
     overflow-x: auto;
-    padding-top: 50px;
+
     /*white-space: nowrap;*/
 }
 
 .poule-group > .row > .col {
     /*display: inline-block;*/
     /*float: none;*/
+}
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.left-sidebar{
+    position: fixed !important;
+}
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+#sidebarnav-bottom {
+    position: fixed;
+    width: 250px;
+    bottom:0;
+}
+#sidebarnav-bottom > .btn{
+    width: 90%;
+}
+
+.team-img {
+    width:100px;
+}
+
+#result-pill {
+    font-weight: bold;
+    font-size: large;
+    text-align: center;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+.img-table {
+    width:30px;
+    height:30px;
+}
+
+
+.group-border {
+  border-style: solid;
+  border-width: 5px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #2255a4;
+    border: #2255a4;
+}
+
+.user-message {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    width: auto;
 }

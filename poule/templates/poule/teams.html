@@ -1,0 +1,102 @@
+{% extends "poule/sidebar.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{#    <div class="row page-breadcrumb ">#}
+{#        <div class="col-3 d-flex  align-items-center">#}
+{#            <h4 class="page-title mb-2 ">Teams</h4>#}
+{#            <hr>#}
+{#        </div>#}
+{#    </div>#}
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Teams</h5>
+                    <div class="table-responsive">
+                        <table id="zero_config" class="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for team in object.teams.all %}
+                                <tr>
+
+                                    <td><img src=" {{ team.image.url }} " class="rounded img-table mr-2 shadow"> {{ team.name }}</td>
+                                    <td>
+                                        <a href="{{ team.pk }}/update/" class="btn btn-outline-info">Edit</a>
+                                        <a href="{{ team.pk }}/delete/" class="btn btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add New Team</h5>
+                    <form class="form-horizontal m-t-20" method="POST" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="row p-b-30">
+                            <div class="col-12">
+                                <fieldset class="form-group">
+                                    {{ form|crispy }}
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="p-t-20">
+                                        <button class="btn btn-block btn-lg btn-outline-success" name="add" type="submit">Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+             <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Generate Random Teams</h5>
+                    <p>There are 64 country teams available, based on the highest FIFA ranking countries for both men and women.
+                        Select how many of these country teams you want to generate randomly, no duplicates will be added.</p>
+                    <form class="form-horizontal m-t-20" method="POST" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="row p-b-30">
+                            <div class="col-12">
+                                <fieldset class="form-group">
+
+                                        <label for="numberofteams" class=" control-label col-form-label">Number of random country teams</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" name='number' min="1" max="64" class="form-control" id="numberofteams" placeholder="1-64">
+                                        </div>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="p-t-20">
+                                        <button class="btn btn-block btn-lg btn-outline-warning" name="generate" type="submit">Generate
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock content %}

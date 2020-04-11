@@ -1,6 +1,8 @@
 from django.urls import path
-from . import views
+from .views import PouleListView, PouleCreateView
+
 
 urlpatterns = [
-    path('', views.home, name='lobby-home'),
+    path('', PouleListView.as_view(), name='lobby-home'),
+    path('poule/new/', PouleCreateView.as_view(), name='poule-create'),
 ]
